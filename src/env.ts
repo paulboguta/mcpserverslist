@@ -17,6 +17,8 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string().min(1).optional(),
     ANTHROPIC_API_KEY: z.string().min(1).optional(),
     GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1).optional(),
+    // Trigger Configuration
+    TRIGGER_PROJECT_ID: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -42,6 +44,8 @@ export const env = createEnv({
     GOOGLE_GENERATIVE_AI_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     // PostHog Configuration
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    // Trigger Configuration
+    TRIGGER_PROJECT_ID: process.env.TRIGGER_PROJECT_ID,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

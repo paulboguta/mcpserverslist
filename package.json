@@ -30,6 +30,7 @@
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@t3-oss/env-nextjs": "^0.13.8",
+    "@trigger.dev/sdk": "^3.3.17",
     "ai": "^4.3.19",
     "better-auth": "^1.2.12",
     "class-variance-authority": "^0.7.1",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@trigger.dev/build": "^3.3.17",
     "@types/debounce": "^1.2.4",
     "@types/node": "^20",
     "@types/react": "^19",
