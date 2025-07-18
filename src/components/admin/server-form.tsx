@@ -9,6 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Server } from "@/lib/db/schema";
+import { useState } from "react";
+import { useServerAction } from "zsa-react";
+import { uploadLogoAction } from "@/app/actions/upload";
 
 const serverSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -33,10 +36,23 @@ interface ServerFormProps {
 }
 
 export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerFormProps) {
+  const [uploadedLogoUrl, setUploadedLogoUrl] = useState<string>("");
+
+  const { execute: uploadLogo, isPending: isUploading } = useServerAction(uploadLogoAction, {
+    onSuccess: ({ data }) => {
+      setUploadedLogoUrl(data.logoUrl);
+    },
+    onError: ({ err }) => {
+      console.error("Failed to upload logo:", err);
+      alert("Failed to upload logo: " + err.message);
+    },
+  });
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm<ServerFormData>({
     resolver: zodResolver(serverSchema),
     defaultValues: server ? {
@@ -55,6 +71,23 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
     },
   });
 
+  const currentLogoUrl = watch("logoUrl");
+
+  const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadLogo({ file });
+    }
+  };
+
+  const handleFormSubmit = (data: ServerFormData) => {
+    const finalData = {
+      ...data,
+      logoUrl: uploadedLogoUrl || data.logoUrl,
+    };
+    onSubmit(finalData);
+  };
+
   return (
     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
@@ -63,7 +96,7 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
         </DialogTitle>
       </DialogHeader>
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label htmlFor="name">Name *</Label>
@@ -161,11 +194,30 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               type="url"
               {...register("logoUrl")}
               className={errors.logoUrl ? "border-red-500" : ""}
+              value={uploadedLogoUrl || currentLogoUrl}
+              onChange={(e) => setValue("logoUrl", e.target.value)}
             />
             {errors.logoUrl && (
               <p className="text-sm text-red-500 mt-1">{errors.logoUrl.message}</p>
             )}
           </div>
+        </div>
+
+        <div>
+          <Label htmlFor="logoFile">Upload Logo</Label>
+          <Input
+            id="logoFile"
+            type="file"
+            accept="image/*"
+            onChange={handleLogoFileChange}
+            disabled={isUploading}
+          />
+          {isUploading && (
+            <p className="text-sm text-blue-500 mt-1">Uploading logo...</p>
+          )}
+          {uploadedLogoUrl && (
+            <p className="text-sm text-green-500 mt-1">Logo uploaded successfully!</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -195,8 +247,8 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : server ? "Update" : "Create"}
+          <Button type="submit" disabled={isLoading || isUploading}>
+            {isLoading || isUploading ? "Saving..." : server ? "Update" : "Create"}
           </Button>
         </div>
       </form>

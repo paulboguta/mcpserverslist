@@ -36,9 +36,6 @@ A public, minimal-friction directory that lets AI-curious engineers and CTOs "di
 ### servers_to_categories
 - server_id FK, category_id FK (many-to-many)
 
-### admin_users
-- clerk_user_id, role
-
 ## Current Status
 Following the prompt plan in `.claude/prompt_plan.md` - currently on task 01_tooling_bootstrap.
 

@@ -12,6 +12,7 @@ export const env = createEnv({
     CLOUDFLARE_R2_SECRET_ACCESS_KEY: z.string().min(1),
     CLOUDFLARE_R2_BUCKET_NAME: z.string().min(1),
     CLOUDFLARE_R2_ENDPOINT: z.string().url(),
+    CLOUDFLARE_R2_PUBLIC_URL: z.string().url(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -28,6 +29,7 @@ export const env = createEnv({
       process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
     CLOUDFLARE_R2_BUCKET_NAME: process.env.CLOUDFLARE_R2_BUCKET_NAME,
     CLOUDFLARE_R2_ENDPOINT: process.env.CLOUDFLARE_R2_ENDPOINT,
+    CLOUDFLARE_R2_PUBLIC_URL: process.env.CLOUDFLARE_R2_PUBLIC_URL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
