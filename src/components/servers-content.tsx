@@ -1,17 +1,21 @@
 import { getServersUseCase } from '@/use-cases/servers';
 import { ITEMS_PER_PAGE, loadSearchParams } from '@/lib/search-params';
+import { DEFAULT_SORT_SERVERS } from '@/config/sorting';
 import { SearchParams } from 'nuqs/server';
 import { Pagination } from './pagination';
 import { ServerCard } from './server-card';
 
 export async function ServersContent({ searchParams }: { searchParams: SearchParams }) {
-  const { page } = await loadSearchParams(searchParams);
+  const { q, sort, dir, page } = await loadSearchParams(searchParams);
 
   const currentPage = page ? Number(page) : 1;
 
   const result = await getServersUseCase({
+    searchQuery: q as string,
     page: currentPage,
     limit: ITEMS_PER_PAGE,
+    sortField: sort ?? DEFAULT_SORT_SERVERS.field,
+    sortDirection: dir ?? DEFAULT_SORT_SERVERS.direction,
   });
 
   const { servers: paginatedServers, pagination } = result;

@@ -1,33 +1,29 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// import { Analytics } from '@/components/analytics';
+// import { Providers } from '@/components/providers';
+import { Toaster } from '@/components/ui/sonner';
+// import { metadata } from '@/config/website';
+import { cn } from '@/lib/utils';
+import { Inter } from 'next/font/google';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import './globals.css';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// export { metadata };
 
-export const metadata: Metadata = {
-  title: "MCP Servers List",
-  description: "Discover all MCP servers",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        {/* <Analytics /> */}
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn('bg-background dark min-h-screen font-sans antialiased', inter.className)}
       >
-        {children}
+        {/* <Providers> */}
+          <Toaster />
+          <NuqsAdapter>{children}</NuqsAdapter>
+        {/* </Providers> */}
       </body>
     </html>
   );
