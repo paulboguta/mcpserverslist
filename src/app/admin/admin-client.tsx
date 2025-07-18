@@ -29,7 +29,7 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     },
     onError: ({ err }) => {
       console.error("Failed to create server:", err);
-      alert("Failed to create server: " + err.message);
+      alert(`Failed to create server: ${err.message}`);
     },
   });
 
@@ -39,7 +39,7 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     },
     onError: ({ err }) => {
       console.error("Failed to update server:", err);
-      alert("Failed to update server: " + err.message);
+      alert(`Failed to update server: ${err.message}`);
     },
   });
 
@@ -52,7 +52,7 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     },
     onError: ({ err }) => {
       console.error("Failed to delete server:", err);
-      alert("Failed to delete server: " + err.message);
+      alert(`Failed to delete server: ${err.message}`);
       setDeletingId(null);
     },
   });
@@ -64,7 +64,7 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     },
     onError: ({ err }) => {
       console.error("Failed to revalidate cache:", err);
-      alert("Failed to revalidate cache: " + err.message);
+      alert(`Failed to revalidate cache: ${err.message}`);
     },
   });
 
