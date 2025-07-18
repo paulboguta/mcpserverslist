@@ -10,7 +10,9 @@
     "type-check": "tsc --noEmit",
     "format": "biome format --write",
     "check": "biome check --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
