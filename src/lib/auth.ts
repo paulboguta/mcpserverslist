@@ -9,7 +9,7 @@ export const auth = betterAuth({
     provider: "pg",
   }),
   emailAndPassword: {
-    enabled: true,
+    enabled: false,
   },
   socialProviders: {
     github: {
@@ -25,6 +25,3 @@ export const auth = betterAuth({
     admin(),
   ],
 });
-
-export type Session = typeof auth.$Infer.Session;
-export type User = typeof auth.$Infer.User;
