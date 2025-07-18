@@ -1,23 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  type ColumnDef,
-} from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ServerForm } from "./server-form";
-import type { Server } from "@/lib/db/schema";
+import type { Server, NewServer } from "@/lib/db/schema";
 import { Pencil, Trash2, Plus } from "lucide-react";
 
 interface ServersTableProps {
   servers: Server[];
-  onCreateServer: (data: any) => void;
-  onUpdateServer: (id: string, data: any) => void;
+  onCreateServer: (data: NewServer) => void;
+  onUpdateServer: (id: string, data: Partial<NewServer>) => void;
   onDeleteServer: (id: string) => void;
   isLoading?: boolean;
 }
@@ -32,81 +26,7 @@ export function ServersTable({
   const [editingServer, setEditingServer] = useState<Server | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const columns: ColumnDef<Server>[] = [
-    {
-      accessorKey: "name",
-      header: "Name",
-    },
-    {
-      accessorKey: "slug",
-      header: "Slug",
-    },
-    {
-      accessorKey: "shortDesc",
-      header: "Description",
-      cell: ({ row }) => {
-        const desc = row.getValue("shortDesc") as string;
-        return desc.length > 50 ? `${desc.substring(0, 50)}...` : desc;
-      },
-    },
-    {
-      accessorKey: "stars",
-      header: "Stars",
-      cell: ({ row }) => {
-        const stars = row.getValue("stars") as number;
-        return stars || 0;
-      },
-    },
-    {
-      accessorKey: "license",
-      header: "License",
-    },
-    {
-      accessorKey: "createdAt",
-      header: "Created",
-      cell: ({ row }) => {
-        const date = row.getValue("createdAt") as Date;
-        return new Date(date).toLocaleDateString();
-      },
-    },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const server = row.original;
-        return (
-          <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setEditingServer(server);
-                setShowForm(true);
-              }}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onDeleteServer(server.id)}
-              className="text-red-600 hover:text-red-700"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
-  const table = useReactTable({
-    data: servers,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: NewServer) => {
     if (editingServer) {
       onUpdateServer(editingServer.id, data);
     } else {
@@ -139,44 +59,59 @@ export function ServersTable({
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Slug</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Stars</TableHead>
+              <TableHead>License</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+            {servers.length ? (
+              servers.map((server) => (
+                <TableRow key={server.id}>
+                  <TableCell>{server.name}</TableCell>
+                  <TableCell>{server.slug}</TableCell>
+                  <TableCell>
+                    {server.shortDesc.length > 50
+                      ? `${server.shortDesc.substring(0, 50)}...`
+                      : server.shortDesc}
+                  </TableCell>
+                  <TableCell>{server.stars || 0}</TableCell>
+                  <TableCell>{server.license}</TableCell>
+                  <TableCell>
+                    {new Date(server.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setEditingServer(server);
+                          setShowForm(true);
+                        }}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onDeleteServer(server.id)}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={7} className="h-24 text-center">
                   No servers found.
                 </TableCell>
               </TableRow>

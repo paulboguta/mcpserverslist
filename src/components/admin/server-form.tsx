@@ -26,7 +26,7 @@ const serverSchema = z.object({
 type ServerFormData = z.infer<typeof serverSchema>;
 
 interface ServerFormProps {
-  server?: Server;
+  server?: Server | null;
   onSubmit: (data: ServerFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
