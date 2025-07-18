@@ -14,7 +14,6 @@ export const env = createEnv({
     CLOUDFLARE_R2_ENDPOINT: z.string().url(),
   },
   client: {
-    NEXT_PUBLIC_ADMIN_EMAIL: z.string().email(),
     NEXT_PUBLIC_APP_URL: z.string().url(),
   },
   runtimeEnv: {
@@ -23,7 +22,6 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
-    NEXT_PUBLIC_ADMIN_EMAIL: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     CLOUDFLARE_R2_ACCESS_KEY_ID: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID,
     CLOUDFLARE_R2_SECRET_ACCESS_KEY:

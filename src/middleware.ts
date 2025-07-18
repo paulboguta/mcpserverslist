@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
-import { env } from "@/env";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -22,8 +21,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Check if user is admin (matching the admin email)
-  if (session.user.email !== env.NEXT_PUBLIC_ADMIN_EMAIL) {
+  // Check if user has admin role
+  if (session.user.role !== "admin") {
     const homeUrl = new URL("/", request.url);
     return NextResponse.redirect(homeUrl);
   }

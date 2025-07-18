@@ -8,6 +8,13 @@
       "when": 1752830313964,
       "tag": "0000_tense_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1752830953688,
+      "tag": "0001_neat_blindfold",
+      "breakpoints": true
     }
   ]
 }

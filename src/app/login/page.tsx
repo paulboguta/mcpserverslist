@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { signIn } from "better-auth/client";
+import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     
     try {
-      await signIn.email({
+      await authClient.signIn.email({
         email,
         password,
       });
@@ -34,7 +34,7 @@ export default function LoginPage() {
   const handleGitHubLogin = async () => {
     setLoading(true);
     try {
-      await signIn.social({
+      await authClient.signIn.social({
         provider: "github",
       });
     } catch (error) {
