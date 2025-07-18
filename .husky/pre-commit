@@ -1,2 +1,0 @@
-pnpm biome check --write
-pnpm biome format --write
