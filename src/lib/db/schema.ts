@@ -145,8 +145,23 @@ export const verification = pgTable("verification", {
   ),
 });
 
+export const submissions = pgTable("submissions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  serverName: varchar("server_name", { length: 255 }).notNull(),
+  repoUrl: varchar("repo_url", { length: 255 }).notNull(),
+  description: text("description"),
+  status: varchar("status", { length: 50 }).notNull().default("pending"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // Type exports
 export type Server = typeof servers.$inferSelect;
 export type NewServer = typeof servers.$inferInsert;
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+export type Submission = typeof submissions.$inferSelect;
+export type NewSubmission = typeof submissions.$inferInsert;
