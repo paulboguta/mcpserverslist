@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // ** Only admin paths below **
   // For /admin paths, check authentication
   const session = await auth.api.getSession({
     headers: request.headers,
