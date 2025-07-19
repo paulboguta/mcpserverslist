@@ -24,7 +24,7 @@ export interface UpdateServerStatsInput {
 export interface UpdateServerContentInput {
   serverId: string;
   shortDesc: string;
-  longDesc: string;
+  longDesc: string | null;
 }
 
 /**

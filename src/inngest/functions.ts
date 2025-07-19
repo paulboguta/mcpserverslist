@@ -167,26 +167,22 @@ export const handleServerCreated = inngest.createFunction(
 
         // Check if AI returned the expected structure
         if (aiResult && typeof aiResult === 'object') {
-          const shortDesc = aiResult.summary || aiResult.shortDesc || "MCP server description";
-          const longDesc = aiResult.longDescription || aiResult.longDesc || "MCP server description";
-          const features = aiResult.features || [];
+          const shortDesc = aiResult.summary || "MCP server description";
 
           await updateServerContent({
             serverId,
             shortDesc,
-            longDesc,
+            longDesc: null, // No longer generating long descriptions
           });
 
           content = {
             shortDesc,
-            longDesc,
-            features,
+            longDesc: "",
+            features: [],
           };
 
           logger.info("AI content generated and updated", {
             shortDescLength: shortDesc.length,
-            longDescLength: longDesc.length,
-            featuresCount: features.length,
           });
         } else {
           logger.error("AI returned unexpected structure", { aiResult });

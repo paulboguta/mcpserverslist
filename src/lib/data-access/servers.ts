@@ -119,6 +119,8 @@ export const getAllServers = async () => {
       id: servers.id,
       name: servers.name,
       slug: servers.slug,
+      createdAt: servers.createdAt,
+      updatedAt: servers.updatedAt,
     })
     .from(servers)
     .orderBy(servers.createdAt);

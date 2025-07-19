@@ -30,17 +30,13 @@ export function ServerCard({
 }: ServerCardProps) {
   // Determine the best logo to use
   const displayLogo = (() => {
-    // If logoUrl is provided and it's not a favicon URL, use it directly
-    if (logoUrl && !logoUrl.includes('favicons?domain=')) {
-      return logoUrl;
-    }
-    // If we have a homepage URL, generate favicon from it
-    if (homepageUrl) {
-      return getFaviconUrl(homepageUrl);
-    }
-    // Fall back to logoUrl if it exists (even if it's a favicon URL)
+    // Priority 1: If logoUrl is provided (already a favicon URL), use it directly
     if (logoUrl) {
       return logoUrl;
+    }
+    // Priority 2: If we have a homepage URL, generate favicon from it
+    if (homepageUrl) {
+      return getFaviconUrl(homepageUrl);
     }
     // Finally, use placeholder
     return SVG_PLACEHOLDER;

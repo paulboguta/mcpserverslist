@@ -12,18 +12,9 @@ export const generateContentJsonSchema = {
     summary: {
       type: "string" as const,
       description: "A brief, one-sentence overview of the MCP server (max 160 characters for SEO)"
-    },
-    longDescription: {
-      type: "string" as const,
-      description: "A detailed description of the MCP server's capabilities and use cases"
-    },
-    features: {
-      type: "array" as const,
-      items: { type: "string" as const },
-      description: "Key features or highlights of the MCP server"
     }
   },
-  required: ["summary", "longDescription", "features"] as const
+  required: ["summary"] as const
 };
 
 // Keep Zod schema for type inference
@@ -31,20 +22,14 @@ export const generateContentSchema = z.object({
   summary: z
     .string()
     .describe("A brief, one-sentence overview of the MCP server (max 160 characters for SEO)"),
-  longDescription: z
-    .string()
-    .describe("A detailed description of the MCP server's capabilities and use cases"),
-  features: z
-    .array(z.string())
-    .describe("Key features or highlights of the MCP server"),
 });
 
 export type GenerateContentResponse = z.infer<typeof generateContentSchema>;
 
 export const generateContentTemplate: ObjectPromptTemplate = {
   id: "generate-content",
-  name: "Generate MCP Server Content",
-  description: "Generate summary, description, and features for MCP servers",
+  name: "Generate MCP Server Summary",
+  description: "Generate a concise summary for MCP servers",
   category: "content-generation",
   version: "1.0.0",
   responseType: PromptResponseType.OBJECT,
@@ -52,50 +37,24 @@ export const generateContentTemplate: ObjectPromptTemplate = {
   schema: generateContentSchema,
   jsonSchema: generateContentJsonSchema,
   schemaName: "GenerateContentResponse",
-  schemaDescription: "Generated content for MCP server including summary, description, and features",
-  systemPrompt: "You are an expert at summarizing and extracting key features from MCP (Model Context Protocol) servers. Focus on what the server does and its core value proposition, the specific capabilities it provides to AI models, and real-world use cases.",
-  template: `Given the following inputs about an MCP server, generate a concise summary, detailed description, and key features.
+  schemaDescription: "Generated summary for MCP server",
+  systemPrompt: "You are an expert at summarizing MCP (Model Context Protocol) servers. Create concise, engaging summaries that explain what the server does.",
+  template: `Given the following inputs about an MCP server, generate a concise summary.
 
 **Server Name:** {{serverName}}
 **Homepage URL:** {{homepageUrl}}
 **Repository URL:** {{repoUrl}}
-**Documentation URL:** {{docsUrl}}
-**Additional Context:** {{additionalContext}}
-**Repository Stats:** {{repoStats}}
 **Repository README:** {{repoReadme}}
 
-Focus on:
-- What the MCP server does and its core value proposition
-- The specific capabilities it provides to AI models
-- The APIs, tools, or resources it exposes
-- Real-world use cases and applications
-- Technical capabilities without getting into implementation details
+Generate a summary that:
+- Is under 160 characters for SEO
+- Clearly explains what the server does
+- Focuses on the primary function/capability
+- Is engaging and clear
+- Doesn't start with "MCP Server that" or "This MCP Server provides" 
+- Goes straight to describing what it does (e.g. "Manages cloud infrastructure", "Provides weather data", etc.)
 
-Summary Guidelines:
-- Keep it under 160 characters for SEO
-- Make it engaging and clear
-- Focus on the server's primary function
-- Treat it as a tagline that would appear in search results
-- Don't start with "MCP Server that" or "This MCP Server provides" just go straight away to "Does XYZ"
-
-Long Description Guidelines:
-- Provide comprehensive details about the server's capabilities
-- Explain what problems it solves
-- Describe the main features and functionality
-- Keep it focused on the product, not installation or setup
-- Make it informative for users deciding whether to use this server
-
-Features Guidelines:
-- List 3-6 key features or capabilities
-- Each feature should be concise and specific
-- Focus on what the server can do, not how it works internally
-- Use clear, non-technical language when possible
-
-Requirements:
-- You don't mention installation steps or other setup-related information
-- You focus on the MCP server's capabilities and use cases
-- Summary must be under 160 characters for SEO optimization
-- Remember: these are MCP servers that provide capabilities to AI models`,
+Keep it simple and focused on the core value proposition.`,
 };
 
 export interface GenerateContentInput {

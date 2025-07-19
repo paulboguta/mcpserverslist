@@ -1,50 +1,15 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { SVG_PLACEHOLDER, getFaviconUrl } from '@/lib/favicon';
-import { Server } from '@/lib/db/schema';
+import type { Server } from '@/lib/db/schema';
 import { ArrowRightIcon, Command, HomeIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Icons } from '../icons';
-import ReactMarkdown from 'react-markdown';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type ServerContentProps = {
   server: Server;
 };
 
-function ServerBreadcrumb({ serverName }: { serverName: string }) {
-  return (
-    <Breadcrumb className="hidden md:block">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/" className="inline-flex items-center gap-1.5">
-            <HomeIcon size={16} aria-hidden="true" />
-            Home
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/" className="inline-flex items-center gap-1.5">
-            <Command size={16} aria-hidden="true" />
-            MCP Servers
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>{serverName}</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 function ServerHeader({
   name,
@@ -61,15 +26,15 @@ function ServerHeader({
 }) {
   // Determine the best logo to use
   const displayLogo = (() => {
-    if (logoUrl && !logoUrl.includes('favicons?domain=')) {
-      return logoUrl;
-    }
-    if (homepageUrl) {
-      return getFaviconUrl(homepageUrl);
-    }
+    // Priority 1: If logoUrl is provided (already a favicon URL), use it directly
     if (logoUrl) {
       return logoUrl;
     }
+    // Priority 2: If we have a homepage URL, generate favicon from it
+    if (homepageUrl) {
+      return getFaviconUrl(homepageUrl);
+    }
+    // Finally, use placeholder
     return SVG_PLACEHOLDER;
   })();
 
@@ -125,36 +90,67 @@ function ServerHeader({
   );
 }
 
-function UniversalInstallGuide({ serverName }: { serverName: string }) {
+function UniversalInstallGuide({ serverName, repoUrl }: { serverName: string; repoUrl?: string | null }) {
   return (
-    <div className="space-y-4 rounded-lg border border-border bg-muted/30 p-6">
-      <h3 className="text-lg font-semibold">Universal Installation Guide</h3>
-      <p className="text-sm text-muted-foreground">
-        This MCP server works with Claude Desktop, Cursor, Windsurf, Cline, and other MCP-compatible clients.
-      </p>
-      <div className="space-y-3">
-        <div className="space-y-2">
-          <h4 className="font-medium">1. Install via NPM (recommended)</h4>
-          <pre className="rounded bg-black/80 p-3 text-sm">
-            <code className="text-green-400">npm install -g {serverName}</code>
+    <div className="space-y-6 rounded-lg border border-border bg-muted/30 p-6">
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Install in Cursor</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Go to: Settings → Cursor Settings → MCP → Add new global MCP server
+        </p>
+        <p className="text-sm text-muted-foreground mb-4">
+          Pasting the following configuration into your Cursor ~/.cursor/mcp.json file is the recommended approach. 
+          You may also install in a specific project by creating .cursor/mcp.json in your project folder. 
+          See Cursor MCP docs for more info.
+        </p>
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            <strong>Note:</strong> Example using context7 MCP. For direct installation guide of <strong>{serverName}</strong>, 
+            {repoUrl ? (
+              <>
+                {' '}go to their{' '}
+                <a 
+                  href={repoUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline hover:no-underline font-medium"
+                >
+                  repository
+                </a>
+              </>
+            ) : (
+              ' check their documentation'
+            )}.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium mb-2">Cursor Remote Server Connection</h4>
+          <pre className="rounded bg-black/80 p-3 text-sm overflow-x-auto">
+            <code className="text-green-400">{`{
+  "mcpServers": {
+    "context7": {
+      "url": "https://mcp.context7.com/mcp"
+    }
+  }
+}`}</code>
           </pre>
         </div>
-        <div className="space-y-2">
-          <h4 className="font-medium">2. Configure your MCP client</h4>
-          <p className="text-sm text-muted-foreground">
-            Add the server to your MCP client configuration. The exact steps depend on your client:
-          </p>
-          <ul className="ml-6 list-disc space-y-1 text-sm text-muted-foreground">
-            <li>Claude Desktop: Edit claude_desktop_config.json</li>
-            <li>Cursor/Windsurf: Add to MCP settings</li>
-            <li>Cline: Configure in extension settings</li>
-          </ul>
-        </div>
-        <div className="space-y-2">
-          <h4 className="font-medium">3. Restart your client</h4>
-          <p className="text-sm text-muted-foreground">
-            Restart your MCP client to load the new server configuration.
-          </p>
+
+        <div>
+          <h4 className="font-medium mb-2">Cursor Local Server Connection</h4>
+          <pre className="rounded bg-black/80 p-3 text-sm overflow-x-auto">
+            <code className="text-green-400">{`{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    }
+  }
+}`}</code>
+          </pre>
         </div>
       </div>
     </div>
@@ -164,7 +160,6 @@ function UniversalInstallGuide({ serverName }: { serverName: string }) {
 export function ServerContent({ server }: ServerContentProps) {
   return (
     <div className="space-y-8">
-      <ServerBreadcrumb serverName={server.name} />
       <ServerHeader
         name={server.name}
         homepageUrl={server.homepageUrl}
@@ -174,35 +169,9 @@ export function ServerContent({ server }: ServerContentProps) {
       />
       <p className="text-muted-foreground text-lg">{server.shortDesc}</p>
       
-      <Tabs defaultValue="installation" className="w-full">
-        <TabsList className="w-fit max-w-[200px] grid grid-cols-2">
-          <TabsTrigger value="installation">Installation</TabsTrigger>
-          <TabsTrigger value="readme">README</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="installation" className="mt-6">
-          <UniversalInstallGuide serverName={server.name} />
-        </TabsContent>
-        
-        <TabsContent value="readme" className="mt-6">
-          {server.readmeContent ? (
-            <div className="prose prose-neutral dark:prose-invert max-w-none">
-              <ReactMarkdown>{server.readmeContent}</ReactMarkdown>
-            </div>
-          ) : (
-            <div className="rounded-lg border border-dashed border-border p-8 text-center">
-              <p className="text-muted-foreground">README content not available yet.</p>
-              {server.repoUrl && (
-                <Button variant="outline" size="sm" className="mt-4" asChild>
-                  <a href={`${server.repoUrl}#readme`} target="_blank" rel="noopener noreferrer">
-                    View on GitHub
-                  </a>
-                </Button>
-              )}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      <div className="mt-8">
+        <UniversalInstallGuide serverName={server.name} repoUrl={server.repoUrl} />
+      </div>
     </div>
   );
 }

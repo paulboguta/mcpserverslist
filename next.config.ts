@@ -33,6 +33,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/s2/favicons/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: '',
+        pathname: '/user-attachments/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

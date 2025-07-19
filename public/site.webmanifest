@@ -1,0 +1,17 @@
+{
+  "name": "MCPServersList - Discover Model Context Protocol Servers",
+  "short_name": "MCPServersList",
+  "description": "A public directory for AI-curious engineers and CTOs to discover Model Context Protocol servers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

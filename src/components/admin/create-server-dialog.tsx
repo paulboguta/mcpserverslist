@@ -94,22 +94,31 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
     setIsSubmitting(true);
     
     try {
-      // If no logo file and no logo URL provided, use favicon from homepage
-      if (!values.logoFile && !values.logoUrl && values.homepageUrl) {
+      // Convert logoUrl to favicon format if provided
+      let finalLogoUrl = values.logoUrl;
+      if (values.logoUrl) {
+        try {
+          const url = new URL(values.logoUrl);
+          finalLogoUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
+        } catch (error) {
+          console.warn('Failed to generate favicon from logoUrl:', error);
+          finalLogoUrl = values.logoUrl; // Keep original if URL parsing fails
+        }
+      }
+      // If no logo URL provided, use favicon from homepage
+      else if (!values.logoFile && values.homepageUrl) {
         try {
           const url = new URL(values.homepageUrl);
-          const faviconUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
-          values.logoUrl = faviconUrl;
+          finalLogoUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
         } catch (error) {
-          console.warn('Failed to generate favicon URL:', error);
+          console.warn('Failed to generate favicon URL from homepage:', error);
         }
       }
 
       // TODO: Handle file upload to R2 if logoFile is provided
-      let finalLogoUrl = values.logoUrl;
       if (values.logoFile) {
-        // For now, we'll use the preview URL or fallback to favicon
-        finalLogoUrl = values.logoUrl || (values.homepageUrl ? `https://www.google.com/s2/favicons?domain=${new URL(values.homepageUrl).hostname}&sz=128` : undefined);
+        // For now, we'll use the converted favicon URL or fallback to homepage favicon
+        finalLogoUrl = finalLogoUrl || (values.homepageUrl ? `https://www.google.com/s2/favicons?domain=${new URL(values.homepageUrl).hostname}&sz=128` : undefined);
       }
 
       // Trigger the background task that creates the server and processes it
