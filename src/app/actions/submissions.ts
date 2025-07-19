@@ -9,7 +9,8 @@ import { submitServerSchema } from "@/types/submission";
 import { createServerAction } from "zsa";
 
 export const submitServer = createServerAction()
-  .input(submitServerSchema)
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(submitServerSchema as any)
   .handler(async ({ input }) => {
     try {
       // Check if server already exists in the servers table

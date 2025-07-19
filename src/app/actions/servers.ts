@@ -7,6 +7,7 @@ import { servers } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { adminProcedure } from "@/lib/safe-action";
 
+
 const createServerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -37,7 +38,8 @@ export async function getServers() {
 // Admin actions
 export const createServerAction = adminProcedure
   .createServerAction()
-  .input(createServerSchema)
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(createServerSchema as any)
   .handler(async ({ input }) => {
     const [newServer] = await db.insert(servers).values(input).returning();
     
@@ -49,7 +51,8 @@ export const createServerAction = adminProcedure
 
 export const updateServerAction = adminProcedure
   .createServerAction()
-  .input(updateServerSchema)
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(updateServerSchema as any)
   .handler(async ({ input }) => {
     const { id, ...data } = input;
     
@@ -71,7 +74,8 @@ export const updateServerAction = adminProcedure
 
 export const deleteServerAction = adminProcedure
   .createServerAction()
-  .input(deleteServerSchema)
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(deleteServerSchema as any)
   .handler(async ({ input }) => {
     const deleted = await db.delete(servers).where(eq(servers.id, input.id)).returning();
     
@@ -87,8 +91,10 @@ export const deleteServerAction = adminProcedure
 
 export const revalidateCacheAction = adminProcedure
   .createServerAction()
-  .input(z.object({ tag: z.string() }))
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(z.object({ tag: z.string() }) as any)
   .handler(async ({ input }) => {
     revalidateTag(input.tag);
     return { success: true };
   });
+

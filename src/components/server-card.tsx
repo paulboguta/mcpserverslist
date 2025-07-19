@@ -1,93 +1,89 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Star, Calendar } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Icons } from '@/components/icons';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Separator } from '@/components/ui/separator';
+import { SVG_PLACEHOLDER } from '@/lib/favicon';
+import { format } from 'date-fns';
+import Link from 'next/link';
 
-interface ServerCardProps {
-  name: string;
+type ServerCardProps = {
   slug: string;
+  name: string;
   shortDesc: string;
-  homepageUrl?: string | null;
   logoUrl?: string | null;
   stars?: number | null;
   license?: string | null;
-  createdAt: Date;
-}
+  lastCommit?: Date | null;
+  categories?: string[];
+};
 
 export function ServerCard({
-  name,
   slug,
+  name,
   shortDesc,
-  homepageUrl,
   logoUrl,
   stars,
   license,
-  createdAt,
+  lastCommit,
+  categories,
 }: ServerCardProps) {
   return (
-    <Card className="h-full transition-shadow hover:shadow-lg">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            {logoUrl && (
-              <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-md">
-                <Image
-                  src={logoUrl}
-                  alt={`${name} logo`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
-            <div>
-              <h3 className="font-semibold text-lg leading-tight">{name}</h3>
-              <div className="flex items-center gap-2 mt-1">
-                {stars && (
-                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                    <Star className="h-3 w-3" />
-                    <span>{stars}</span>
-                  </div>
-                )}
-                {license && (
-                  <Badge variant="secondary" className="text-xs">
-                    {license}
-                  </Badge>
-                )}
-              </div>
+    <Link href={`/server/${slug}`} className="block" prefetch={false}>
+      <div className="border-border/50 bg-card hover:bg-muted/10 hover:border-ring/20 ring-ring/8 relative flex h-full flex-col rounded-lg border p-6 shadow-xs transition-all hover:ring-[3px]">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-2">
+            <h3 className="flex items-center gap-2 leading-none font-semibold tracking-tight">
+              <OptimizedImage
+                src={logoUrl || SVG_PLACEHOLDER}
+                alt={`${name} logo`}
+                width={20}
+                height={20}
+                className="rounded-sm"
+                isIcon
+              />
+              <span className="text-foreground">{name}</span>
+            </h3>
+            <p className="text-muted-foreground line-clamp-3 min-h-[60px] text-sm">{shortDesc}</p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-col gap-2">
+          {/* Categories */}
+          {categories && categories.length > 0 && (
+            <div className="flex items-center gap-1 text-sm">
+              <Icons.tag className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground text-[13px]">
+                {categories.slice(0, 2).join(', ')}
+                {categories.length > 2 && ` +${categories.length - 2}`}
+              </span>
             </div>
-          </div>
-          <div className="flex gap-1">
-            {homepageUrl && (
-              <Link
-                href={homepageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </Link>
+          )}
+          
+          {/* GitHub stats and metadata */}
+          <div className="text-muted-foreground flex items-center gap-4 text-sm">
+            {stars !== null && stars !== undefined && (
+              <div className="flex items-center gap-1">
+                <Icons.gitHub className="h-4 w-4" />
+                <span className="text-[13px]">{stars.toLocaleString()} stars</span>
+              </div>
+            )}
+            
+            {lastCommit && (
+              <>
+                {stars !== null && stars !== undefined && (
+                  <Separator orientation="vertical" className="h-4" />
+                )}
+                <span className="text-[13px]">Last commit {format(lastCommit, 'MMM d, yyyy')}</span>
+              </>
+            )}
+            
+            {license && license !== 'other' && license !== 'unknown' && (
+              <>
+                <Separator orientation="vertical" className="h-4" />
+                <span className="uppercase text-[13px]">{license}</span>
+              </>
             )}
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">
-          {shortDesc}
-        </p>
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />
-            <span>{createdAt.toLocaleDateString()}</span>
-          </div>
-          <Link
-            href={`/server/${slug}`}
-            className="text-primary hover:underline font-medium"
-          >
-            View details
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Link>
   );
 }

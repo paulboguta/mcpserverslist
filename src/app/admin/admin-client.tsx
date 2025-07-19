@@ -3,15 +3,14 @@
 import { useState } from "react";
 import { useServerAction } from "zsa-react";
 import { ServersTable } from "@/components/admin/servers-table";
+import { CreateServerDialog } from "@/components/admin/create-server-dialog";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { 
-  createServerAction, 
-  updateServerAction, 
-  deleteServerAction, 
-  revalidateCacheAction 
+import {
+  deleteServerAction,
+  revalidateCacheAction,
 } from "@/app/actions/servers";
-import type { Server, NewServer } from "@/lib/db/schema";
+import type { Server } from "@/lib/db/schema";
 import { useRouter } from "next/navigation";
 
 interface AdminClientProps {
@@ -23,50 +22,34 @@ export function AdminClient({ initialServers }: AdminClientProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const router = useRouter();
 
-  const { execute: createServer, isPending: isCreateLoading } = useServerAction(createServerAction, {
-    onSuccess: ({ data }) => {
-      setServers(prev => [...prev, data]);
-    },
-    onError: ({ err }) => {
-      console.error("Failed to create server:", err);
-      alert(`Failed to create server: ${err.message}`);
-    },
-  });
-
-  const { execute: updateServer, isPending: isUpdateLoading } = useServerAction(updateServerAction, {
-    onSuccess: ({ data }) => {
-      setServers(prev => prev.map(s => s.id === data.id ? data : s));
-    },
-    onError: ({ err }) => {
-      console.error("Failed to update server:", err);
-      alert(`Failed to update server: ${err.message}`);
-    },
-  });
-
-  const { execute: deleteServer, isPending: isDeleteLoading } = useServerAction(deleteServerAction, {
-    onSuccess: () => {
-      if (deletingId) {
-        setServers(prev => prev.filter(s => s.id !== deletingId));
+  const { execute: deleteServer, isPending: isDeleteLoading } = useServerAction(
+    deleteServerAction,
+    {
+      onSuccess: () => {
+        if (deletingId) {
+          setServers((prev) => prev.filter((s) => s.id !== deletingId));
+          setDeletingId(null);
+        }
+      },
+      onError: ({ err }) => {
+        console.error("Failed to delete server:", err);
+        alert(`Failed to delete server: ${err.message}`);
         setDeletingId(null);
-      }
+      },
     },
-    onError: ({ err }) => {
-      console.error("Failed to delete server:", err);
-      alert(`Failed to delete server: ${err.message}`);
-      setDeletingId(null);
-    },
-  });
+  );
 
-  const { execute: revalidateCache, isPending: isRevalidateLoading } = useServerAction(revalidateCacheAction, {
-    onSuccess: () => {
-      alert("Cache revalidated successfully!");
-      router.refresh();
-    },
-    onError: ({ err }) => {
-      console.error("Failed to revalidate cache:", err);
-      alert(`Failed to revalidate cache: ${err.message}`);
-    },
-  });
+  const { execute: revalidateCache, isPending: isRevalidateLoading } =
+    useServerAction(revalidateCacheAction, {
+      onSuccess: () => {
+        alert("Cache revalidated successfully!");
+        router.refresh();
+      },
+      onError: ({ err }) => {
+        console.error("Failed to revalidate cache:", err);
+        alert(`Failed to revalidate cache: ${err.message}`);
+      },
+    });
 
   const handleSignOut = async () => {
     try {
@@ -75,14 +58,6 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     } catch (error) {
       console.error("Failed to sign out:", error);
     }
-  };
-
-  const handleCreateServer = (data: NewServer) => {
-    createServer(data);
-  };
-
-  const handleUpdateServer = (id: string, data: Partial<NewServer>) => {
-    updateServer({ id, ...data });
   };
 
   const handleDeleteServer = (id: string) => {
@@ -94,29 +69,33 @@ export function AdminClient({ initialServers }: AdminClientProps) {
     revalidateCache({ tag: "servers" });
   };
 
-  const isLoading = isCreateLoading || isUpdateLoading || isDeleteLoading;
+  const handleServerCreated = () => {
+    router.refresh();
+  };
 
   return (
     <>
-      <div className="flex justify-end space-x-2 mb-6">
-        <Button 
-          variant="outline" 
-          onClick={handleRevalidate}
-          disabled={isRevalidateLoading}
-        >
-          {isRevalidateLoading ? "Revalidating..." : "Revalidate Cache"}
-        </Button>
-        <Button variant="outline" onClick={handleSignOut}>
-          Sign Out
-        </Button>
+      <div className="flex justify-between items-center mb-6">
+        <CreateServerDialog onServerCreated={handleServerCreated} />
+
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleRevalidate}
+            disabled={isRevalidateLoading}
+          >
+            {isRevalidateLoading ? "Revalidating..." : "Revalidate Cache"}
+          </Button>
+          <Button variant="outline" onClick={handleSignOut}>
+            Sign Out
+          </Button>
+        </div>
       </div>
 
       <ServersTable
         servers={servers}
-        onCreateServer={handleCreateServer}
-        onUpdateServer={handleUpdateServer}
         onDeleteServer={handleDeleteServer}
-        isLoading={isLoading}
+        isLoading={isDeleteLoading}
       />
     </>
   );

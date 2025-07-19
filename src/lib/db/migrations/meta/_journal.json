@@ -15,6 +15,13 @@
       "when": 1752830953688,
       "tag": "0001_neat_blindfold",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752839573582,
+      "tag": "0002_sloppy_raza",
+      "breakpoints": true
     }
   ]
 }

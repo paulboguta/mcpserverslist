@@ -1,4 +1,4 @@
-import type { LanguageModelV1 } from "ai";
+import type { LanguageModel } from "ai";
 import type { z } from "zod";
 
 /**
@@ -56,6 +56,8 @@ export interface ObjectPromptTemplate extends PromptTemplateBase {
   outputStrategy: ObjectOutputStrategy;
   // biome-ignore lint/suspicious/noExplicitAny: <any>
   schema: z.ZodType<any>; // Schema for the expected return object
+  // biome-ignore lint/suspicious/noExplicitAny: <any>
+  jsonSchema?: any; // Direct JSON schema for Claude Sonnet 4 compatibility 
   schemaName: string;
   schemaDescription?: string; // Optional description of the schema for context
 }
@@ -68,7 +70,7 @@ export type PromptTemplate = TextPromptTemplate | ObjectPromptTemplate;
 /**
  * Type representing any supported AI model client
  */
-export type AIModel = LanguageModelV1;
+export type AIModel = LanguageModel;
 
 /**
  * Generation request parameters
@@ -85,8 +87,8 @@ export interface GenerationRequest {
 export interface TextGenerationResponse {
   text: string;
   usage?: {
-    promptTokens: number;
-    completionTokens: number;
+    inputTokens: number;
+    outputTokens: number;
     totalTokens: number;
   };
 }
@@ -97,8 +99,8 @@ export interface TextGenerationResponse {
 export interface ObjectGenerationResponse<T = unknown> {
   object: T;
   usage?: {
-    promptTokens: number;
-    completionTokens: number;
+    inputTokens: number;
+    outputTokens: number;
     totalTokens: number;
   };
 }
@@ -128,9 +130,7 @@ export interface AITemplate {
  * PostHog tracking properties for LLM analytics
  */
 export interface LLMTrackingProperties {
-  action_type?: string; // Type of LLM action (e.g., "submission_analysis", "server_enrichment")
-  project?: string; // Project identifier for multi-project tracking
   provider: ProviderType;
-  template_id?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: <any>
   [key: string]: any;
 }

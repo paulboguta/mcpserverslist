@@ -25,11 +25,11 @@ export const getModelForProvider = (provider: ProviderType): AIModel => {
     case "openai":
       return openai("gpt-4");
     case "anthropic":
-      return anthropic("claude-3-5-sonnet-20241022");
+      return anthropic("claude-4-sonnet-20250514");
     case "google-flash-2-5":
-      return google("gemini-2.0-flash-exp");
+      return google("gemini-2.5-flash-preview-05-20");
     case "google-pro-2-5":
-      return google("gemini-2.0-pro-exp");
+      return google("gemini-2.5-pro-preview-05-06");
     default:
       throw new Error(`Provider ${provider} not supported`);
   }
@@ -49,6 +49,7 @@ const getTracedModel = (
     return baseModel;
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const trackingProps: Record<string, any> = {
     action_type: properties?.action_type || "llm_generation",
     project: properties?.project || "mcpserverslist",
@@ -56,14 +57,14 @@ const getTracedModel = (
     ...properties,
   };
 
-  return withTracing(baseModel, posthogClient, {
+  return withTracing(baseModel as any, posthogClient, {
     posthogDistinctId: userId,
     posthogGroups: {
       action_type: trackingProps.action_type,
       project: trackingProps.project,
     },
     posthogProperties: trackingProps,
-  });
+  }) as unknown as AIModel;
 };
 
 /**
@@ -81,6 +82,7 @@ export const runTextPrompt = async (
   const model = getTracedModel(provider, userId, {
     ...trackingProperties,
     template_id: template.id,
+    provider: provider,
   });
 
   // Generate response from the model
@@ -91,12 +93,15 @@ export const runTextPrompt = async (
       prompt: promptText,
       system: template.systemPrompt,
       temperature: 0.7,
-      maxTokens: 2000,
     });
 
     return {
       text: response.text,
-      usage: response.usage,
+      usage: response.usage ? {
+        inputTokens: response.usage.inputTokens || 0,
+        outputTokens: response.usage.outputTokens || 0,
+        totalTokens: response.usage.totalTokens || 0,
+      } : undefined,
     };
   } catch (error) {
     console.error("Error generating text:", error);
@@ -107,52 +112,51 @@ export const runTextPrompt = async (
     );
   }
 };
-
 /**
  * Generate object using an object prompt template
  */
 export const runObjectPrompt = async <T>(
-  provider: ProviderType,
-  template: ObjectPromptTemplate,
-  variables: Record<string, string>,
-  userId?: string,
-  trackingProperties?: LLMTrackingProperties,
+	provider: ProviderType,
+	template: ObjectPromptTemplate,
+	variables: Record<string, string>,
+	userId?: string,
 ): Promise<ObjectGenerationResponse<T>> => {
-  // Format the prompt with variables (if any)
-  const promptText = formatPrompt(template.template || "", variables || {});
-  const model = getTracedModel(provider, userId, {
-    ...trackingProperties,
-    template_id: template.id,
-  });
+	// Format the prompt with variables (if any)
+	const promptText = formatPrompt(template.template || "", variables || {});
+	const model = getTracedModel(
+		provider,
+		userId,
+	);
 
-  // Generate structured object from the model
-  try {
-    const response = await generateObject({
-      // biome-ignore lint/suspicious/noExplicitAny: <mvp>
-      model: model as any,
-      schema: template.schema,
-      schemaName: template.schemaName,
-      schemaDescription: template.schemaDescription,
-      system: template.systemPrompt,
-      prompt: promptText,
-      output: "object",
-      temperature: 0.7,
-      maxTokens: 2000,
-    });
+	// Generate structured object from the model
+	try {
+		const response = await generateObject({
+			// biome-ignore lint/suspicious/noExplicitAny: <mvp>
+			model: model as any,
+			schema: template.schema,
+			schemaName: template.schemaName,
+			schemaDescription: template.schemaDescription,
+			system: template.systemPrompt,
+			prompt: promptText,
+			temperature: 0.7,
+		});
 
-    return {
-      object: response.object as T,
-      usage: response.usage,
-    };
-  } catch (error) {
-    console.error("Error generating structured object:", error);
-    throw new Error(
-      `Failed to generate structured response for ${provider}: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
-    );
-  }
+		return {
+			object: response.object as T,
+			usage: response.usage ? {
+				inputTokens: response.usage.inputTokens || 0,
+				outputTokens: response.usage.outputTokens || 0,
+				totalTokens: response.usage.totalTokens || 0,
+			} : undefined,
+		};
+	} catch (error) {
+		console.error("Error generating structured object:", error);
+		throw new Error(
+			`Failed to generate structured response for ${provider}: ${error instanceof Error ? error.message : "Unknown error"}`,
+		);
+	}
 };
+
 
 /**
  * Helper function to handle generation errors consistently

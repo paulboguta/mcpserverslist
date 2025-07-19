@@ -6,9 +6,8 @@ import { z } from "zod";
 
 export const uploadLogoAction = adminProcedure
   .createServerAction()
-  .input(z.object({
-    file: z.instanceof(File),
-  }))
+  // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  .input(z.object({ file: z.instanceof(File) }) as any)
   .handler(async ({ input }) => {
     const logoUrl = await uploadLogo(input.file);
     return { logoUrl };
