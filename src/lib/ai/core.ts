@@ -100,9 +100,9 @@ export const runTextPrompt = async (
       text: response.text,
       usage: response.usage
         ? {
-            inputTokens: response.usage.promptTokens || 0,
-            outputTokens: response.usage.completionTokens || 0,
-            totalTokens: response.usage.totalTokens || 0,
+            inputTokens: (response.usage as any).promptTokens || 0,
+            outputTokens: (response.usage as any).completionTokens || 0,
+            totalTokens: (response.usage as any).totalTokens || 0,
           }
         : undefined,
     };
@@ -145,9 +145,9 @@ export const runObjectPrompt = async <T>(
       object: response.object as T,
       usage: response.usage
         ? {
-            inputTokens: response.usage.promptTokens || 0,
-            outputTokens: response.usage.completionTokens || 0,
-            totalTokens: response.usage.totalTokens || 0,
+            inputTokens: (response.usage as any).promptTokens || 0,
+            outputTokens: (response.usage as any).completionTokens || 0,
+            totalTokens: (response.usage as any).totalTokens || 0,
           }
         : undefined,
     };

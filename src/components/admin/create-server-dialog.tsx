@@ -268,7 +268,7 @@ export function CreateServerDialog({
                 <FormField
                   control={form.control}
                   name="logoFile"
-                  render={({ field: { ...field } }) => (
+                  render={({ field: { name, onBlur } }) => (
                     <FormItem>
                       <FormLabel>Upload Logo</FormLabel>
                       <FormControl>
@@ -276,7 +276,8 @@ export function CreateServerDialog({
                           type="file"
                           accept="image/png,image/jpeg,image/jpg,image/webp"
                           onChange={handleFileChange}
-                          {...field}
+                          name={name}
+                          onBlur={onBlur}
                         />
                       </FormControl>
                       <FormMessage />
