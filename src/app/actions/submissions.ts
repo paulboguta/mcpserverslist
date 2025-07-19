@@ -6,13 +6,30 @@ import {
   checkIfServerExists,
 } from "@/lib/data-access/submissions";
 import { submitServerSchema } from "@/types/submission";
+import { checkRateLimit, getClientIP } from "@/lib/rate-limit";
 import { createServerAction } from "zsa";
+import { headers } from "next/headers";
 
 export const submitServer = createServerAction()
   // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
   .input(submitServerSchema as any)
   .handler(async ({ input }) => {
     try {
+      // Rate limiting check
+      const headersList = await headers();
+      const request = new Request("http://localhost", {
+        headers: headersList,
+      });
+      const clientIP = getClientIP(request);
+      
+      const rateLimitResult = await checkRateLimit(clientIP, "submissions");
+      
+      if (!rateLimitResult.success) {
+        return {
+          success: false,
+          message: `Rate limit exceeded. You can submit ${rateLimitResult.limit} servers per hour. Try again at ${rateLimitResult.resetTime.toLocaleTimeString()}.`,
+        };
+      }
       // Check if server already exists in the servers table
       const serverExists = await checkIfServerExists(input.repoUrl);
       

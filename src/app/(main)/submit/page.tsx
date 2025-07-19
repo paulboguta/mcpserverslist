@@ -5,7 +5,7 @@ import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { SubmitServerInput } from "@/types/submission";
+import type { SubmitServerInput } from "@/types/submission";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useServerAction } from "zsa-react";
@@ -35,7 +35,7 @@ export default function SubmitPage() {
         toast.success(result.message);
       } else {
         toast.error(
-          result?.message || "Failed to submit MCP server. Please try again."
+          result?.message || "Failed to submit MCP server. Please try again.",
         );
       }
     } catch (error) {
