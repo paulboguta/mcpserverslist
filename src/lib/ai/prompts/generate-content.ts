@@ -76,6 +76,7 @@ Summary Guidelines:
 - Make it engaging and clear
 - Focus on the server's primary function
 - Treat it as a tagline that would appear in search results
+- Don't start with "MCP Server that" or "This MCP Server provides" just go straight away to "Does XYZ"
 
 Long Description Guidelines:
 - Provide comprehensive details about the server's capabilities

@@ -1,5 +1,5 @@
 import { inngest } from "./client";
-import { getGitHubStats } from "@/lib/github";
+import { getGitHubStats, getRepoReadme } from "@/lib/github";
 import { ModelProvider } from "@/lib/ai/types";
 import {
   createServer,
@@ -85,13 +85,17 @@ export const handleServerCreated = inngest.createFunction(
       if (targetRepoUrl) {
         try {
           logger.info("Fetching GitHub stats", { repoUrl: targetRepoUrl });
-          const githubStats = await getGitHubStats(targetRepoUrl);
+          const [githubStats, readmeContent] = await Promise.all([
+            getGitHubStats(targetRepoUrl),
+            getRepoReadme(targetRepoUrl)
+          ]);
 
           await updateServerStats({
             serverId,
             stars: githubStats.stars,
             lastCommit: new Date(githubStats.lastCommit),
             license: githubStats.license.key || "unknown",
+            readmeContent: readmeContent || undefined,
           });
 
           stats = {

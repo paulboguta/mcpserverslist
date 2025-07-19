@@ -1,4 +1,4 @@
-import { getServers } from "@/lib/data-access/servers";
+import { getServers, getServerBySlug as dataGetServerBySlug, getAllServers as dataGetAllServers } from "@/lib/data-access/servers";
 import { ITEMS_PER_PAGE } from "@/lib/search-params";
 import { DEFAULT_SORT_SERVERS } from "@/config/sorting";
 import { unstable_cache } from "next/cache";
@@ -48,6 +48,28 @@ export const getServersUseCase = unstable_cache(
     };
   },
   ['servers'],
+  {
+    revalidate: 86400, // 24 hours
+    tags: ['servers'],
+  }
+);
+
+export const getServerBySlug = unstable_cache(
+  async (slug: string) => {
+    return await dataGetServerBySlug(slug);
+  },
+  ['server-by-slug'],
+  {
+    revalidate: 86400, // 24 hours
+    tags: ['servers'],
+  }
+);
+
+export const getAllServers = unstable_cache(
+  async () => {
+    return await dataGetAllServers();
+  },
+  ['all-servers'],
   {
     revalidate: 86400, // 24 hours
     tags: ['servers'],

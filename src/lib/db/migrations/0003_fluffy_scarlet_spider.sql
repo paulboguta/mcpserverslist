@@ -1,0 +1,1 @@
+ALTER TABLE "servers" ADD COLUMN "readme_content" text;

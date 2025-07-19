@@ -26,6 +26,7 @@ export const servers = pgTable(
     stars: integer("stars").default(0),
     lastCommit: timestamp("last_commit", { withTimezone: true }),
     license: varchar("license", { length: 50 }),
+    readmeContent: text("readme_content"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),

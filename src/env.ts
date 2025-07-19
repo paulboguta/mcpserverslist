@@ -26,6 +26,8 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z.string().url(),
     // PostHog Configuration
     NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1),
+    NEXT_PUBLIC_UMAMI_TRACKING_ID: z.string().min(1),
+    NEXT_PUBLIC_UMAMI_URL: z.string().url(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -50,6 +52,9 @@ export const env = createEnv({
     // Inngest Configuration
     INNGEST_EVENT_KEY: process.env.INNGEST_EVENT_KEY,
     INNGEST_SIGNING_KEY: process.env.INNGEST_SIGNING_KEY,
+    // Umami Configuration
+    NEXT_PUBLIC_UMAMI_TRACKING_ID: process.env.NEXT_PUBLIC_UMAMI_TRACKING_ID,
+    NEXT_PUBLIC_UMAMI_URL: process.env.NEXT_PUBLIC_UMAMI_URL,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

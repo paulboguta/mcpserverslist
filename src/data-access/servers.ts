@@ -18,6 +18,7 @@ export interface UpdateServerStatsInput {
   stars: number;
   lastCommit: Date;
   license: string;
+  readmeContent?: string;
 }
 
 export interface UpdateServerContentInput {
@@ -79,6 +80,7 @@ export async function updateServerStats(input: UpdateServerStatsInput) {
       stars: input.stars,
       lastCommit: input.lastCommit,
       license: input.license,
+      ...(input.readmeContent && { readmeContent: input.readmeContent }),
       updatedAt: new Date(),
     })
     .where(eq(servers.id, input.serverId));

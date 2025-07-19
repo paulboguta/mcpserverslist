@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { servers } from "@/lib/db/schema";
-import { sql, or, ilike } from "drizzle-orm";
+import { sql, or, ilike, eq } from "drizzle-orm";
 import { DEFAULT_SORT_SERVERS } from "@/config/sorting";
 
 export const getServers = async ({
@@ -42,7 +42,7 @@ export const getServers = async ({
   let condition = sql`1 = 1`;
 
   // Apply search if query exists
-  if (searchQuery && searchQuery.trim()) {
+  if (searchQuery?.trim()) {
     // For full-text search using the tsv column
     const searchCondition = sql`servers.tsv @@ plainto_tsquery('english', ${searchQuery})`;
 
@@ -72,7 +72,7 @@ export const getServers = async ({
   };
 
   // Add rank field for search queries
-  if (searchQuery && searchQuery.trim()) {
+  if (searchQuery?.trim()) {
     Object.assign(selectFields, {
       rank: sql<number>`ts_rank(servers.tsv, plainto_tsquery('english', ${searchQuery}))`,
     });
@@ -101,4 +101,25 @@ export const getServers = async ({
       limit,
     },
   };
+};
+
+export const getServerBySlug = async (slug: string) => {
+  const [server] = await db
+    .select()
+    .from(servers)
+    .where(eq(servers.slug, slug))
+    .limit(1);
+    
+  return server || null;
+};
+
+export const getAllServers = async () => {
+  return await db
+    .select({
+      id: servers.id,
+      name: servers.name,
+      slug: servers.slug,
+    })
+    .from(servers)
+    .orderBy(servers.createdAt);
 };

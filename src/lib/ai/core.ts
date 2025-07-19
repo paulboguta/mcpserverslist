@@ -57,6 +57,7 @@ const getTracedModel = (
     ...properties,
   };
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   return withTracing(baseModel as any, posthogClient, {
     posthogDistinctId: userId,
     posthogGroups: {
@@ -98,8 +99,8 @@ export const runTextPrompt = async (
     return {
       text: response.text,
       usage: response.usage ? {
-        inputTokens: response.usage.inputTokens || 0,
-        outputTokens: response.usage.outputTokens || 0,
+        inputTokens: response.usage.promptTokens || 0,
+        outputTokens: response.usage.completionTokens || 0,
         totalTokens: response.usage.totalTokens || 0,
       } : undefined,
     };
@@ -144,8 +145,8 @@ export const runObjectPrompt = async <T>(
 		return {
 			object: response.object as T,
 			usage: response.usage ? {
-				inputTokens: response.usage.inputTokens || 0,
-				outputTokens: response.usage.outputTokens || 0,
+				inputTokens: response.usage.promptTokens || 0,
+				outputTokens: response.usage.completionTokens || 0,
 				totalTokens: response.usage.totalTokens || 0,
 			} : undefined,
 		};

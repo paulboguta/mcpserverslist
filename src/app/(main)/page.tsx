@@ -7,7 +7,7 @@ import { SERVERS_SORT_OPTIONS, DEFAULT_SORT_SERVERS } from "@/config/sorting";
 import type { ServerSortField } from "@/types/sorting";
 import type { SearchParams } from "nuqs/server";
 
-export const revalidate = 86400; // 24 hours
+export const revalidate = 3600; // 1 hour
 
 export async function generateStaticParams() {
   // Return empty array for root page - it will be statically generated
@@ -40,10 +40,9 @@ export default async function HomePage(props: {
       </Suspense>
 
       <section className="px-8 pb-24">
-      <SkeletonServersContent />
-        {/* <Suspense fallback={<SkeletonServersContent />}> */}
-          {/* <ServersContent searchParams={searchParams} /> */}
-        {/* </Suspense> */}
+        <Suspense fallback={<SkeletonServersContent />}>
+          <ServersContent searchParams={searchParams} />
+        </Suspense>
       </section>
     </div>
   );

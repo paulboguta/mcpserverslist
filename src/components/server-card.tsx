@@ -1,7 +1,7 @@
 import { Icons } from '@/components/icons';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Separator } from '@/components/ui/separator';
-import { SVG_PLACEHOLDER } from '@/lib/favicon';
+import { SVG_PLACEHOLDER, getFaviconUrl } from '@/lib/favicon';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
@@ -10,6 +10,7 @@ type ServerCardProps = {
   name: string;
   shortDesc: string;
   logoUrl?: string | null;
+  homepageUrl?: string | null;
   stars?: number | null;
   license?: string | null;
   lastCommit?: Date | null;
@@ -21,11 +22,29 @@ export function ServerCard({
   name,
   shortDesc,
   logoUrl,
+  homepageUrl,
   stars,
   license,
   lastCommit,
   categories,
 }: ServerCardProps) {
+  // Determine the best logo to use
+  const displayLogo = (() => {
+    // If logoUrl is provided and it's not a favicon URL, use it directly
+    if (logoUrl && !logoUrl.includes('favicons?domain=')) {
+      return logoUrl;
+    }
+    // If we have a homepage URL, generate favicon from it
+    if (homepageUrl) {
+      return getFaviconUrl(homepageUrl);
+    }
+    // Fall back to logoUrl if it exists (even if it's a favicon URL)
+    if (logoUrl) {
+      return logoUrl;
+    }
+    // Finally, use placeholder
+    return SVG_PLACEHOLDER;
+  })();
   return (
     <Link href={`/server/${slug}`} className="block" prefetch={false}>
       <div className="border-border/50 bg-card hover:bg-muted/10 hover:border-ring/20 ring-ring/8 relative flex h-full flex-col rounded-lg border p-6 shadow-xs transition-all hover:ring-[3px]">
@@ -33,7 +52,7 @@ export function ServerCard({
           <div className="space-y-2">
             <h3 className="flex items-center gap-2 leading-none font-semibold tracking-tight">
               <OptimizedImage
-                src={logoUrl || SVG_PLACEHOLDER}
+                src={displayLogo}
                 alt={`${name} logo`}
                 width={20}
                 height={20}

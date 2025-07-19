@@ -1,4 +1,4 @@
-import { env } from '@/env';
+import { env } from './src/env';
 import posthog from 'posthog-js'
 
 posthog.init(env.NEXT_PUBLIC_POSTHOG_KEY, {
