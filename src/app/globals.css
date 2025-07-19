@@ -100,41 +100,40 @@
     @apply border-border outline-ring/50;
     scrollbar-width: thin;
     scrollbar-color: hsl(240 3.7% 15.9%) transparent;
-
   }
 
   .dark * {
-      scrollbar-color: hsl(240 3.7% 25%) transparent;
+    scrollbar-color: hsl(240 3.7% 25%) transparent;
   }
 
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: hsl(240 3.7% 15.9%);
     border-radius: 5px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     background: hsl(240 5% 26%);
   }
-  
+
   .dark ::-webkit-scrollbar-thumb {
     background: hsl(240 3.7% 25%);
   }
-  
+
   .dark ::-webkit-scrollbar-thumb:hover {
     background: hsl(240 5% 35%);
   }
 
   .container-wrapper {
-    @apply max-w-[1400px] min-[1800px]:max-w-screen-2xl min-[1400px]:border-x border-border/70 dark:border-border mx-auto w-full border-dashed ;
+    @apply max-w-[1400px] min-[1800px]:max-w-screen-2xl min-[1400px]:border-x border-border/70 dark:border-border mx-auto w-full border-dashed;
   }
 
   .border-grid {

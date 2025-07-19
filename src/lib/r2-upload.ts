@@ -13,7 +13,7 @@ const r2Client = new S3Client({
 
 export async function uploadLogo(file: File): Promise<string> {
   const fileName = `logos/${Date.now()}-${file.name}`;
-  
+
   const upload = new Upload({
     client: r2Client,
     params: {
@@ -26,6 +26,6 @@ export async function uploadLogo(file: File): Promise<string> {
   });
 
   await upload.done();
-  
+
   return `${env.CLOUDFLARE_R2_PUBLIC_URL}/${fileName}`;
 }

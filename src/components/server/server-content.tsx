@@ -1,15 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { SVG_PLACEHOLDER, getFaviconUrl } from '@/lib/favicon';
-import type { Server } from '@/lib/db/schema';
-import { ArrowRightIcon, Command, HomeIcon } from 'lucide-react';
-import Link from 'next/link';
-import { Icons } from '../icons';
+import { Button } from "@/components/ui/button";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { SVG_PLACEHOLDER, getFaviconUrl } from "@/lib/favicon";
+import type { Server } from "@/lib/db/schema";
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
+import { Icons } from "../icons";
 
 type ServerContentProps = {
   server: Server;
 };
-
 
 function ServerHeader({
   name,
@@ -90,7 +89,10 @@ function ServerHeader({
   );
 }
 
-function UniversalInstallGuide({ serverName, repoUrl }: { serverName: string; repoUrl?: string | null }) {
+function UniversalInstallGuide({
+  serverName,
+  repoUrl,
+}: { serverName: string; repoUrl?: string | null }) {
   return (
     <div className="space-y-6 rounded-lg border border-border bg-muted/30 p-6">
       <div>
@@ -99,19 +101,22 @@ function UniversalInstallGuide({ serverName, repoUrl }: { serverName: string; re
           Go to: Settings → Cursor Settings → MCP → Add new global MCP server
         </p>
         <p className="text-sm text-muted-foreground mb-4">
-          Pasting the following configuration into your Cursor ~/.cursor/mcp.json file is the recommended approach. 
-          You may also install in a specific project by creating .cursor/mcp.json in your project folder. 
-          See Cursor MCP docs for more info.
+          Pasting the following configuration into your Cursor
+          ~/.cursor/mcp.json file is the recommended approach. You may also
+          install in a specific project by creating .cursor/mcp.json in your
+          project folder. See Cursor MCP docs for more info.
         </p>
         <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Note:</strong> Example using context7 MCP. For direct installation guide of <strong>{serverName}</strong>, 
+            <strong>Note:</strong> Example using context7 MCP. For direct
+            installation guide of <strong>{serverName}</strong>,
             {repoUrl ? (
               <>
-                {' '}go to their{' '}
-                <a 
-                  href={repoUrl} 
-                  target="_blank" 
+                {" "}
+                go to their{" "}
+                <a
+                  href={repoUrl}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="underline hover:no-underline font-medium"
                 >
@@ -119,8 +124,9 @@ function UniversalInstallGuide({ serverName, repoUrl }: { serverName: string; re
                 </a>
               </>
             ) : (
-              ' check their documentation'
-            )}.
+              " check their documentation"
+            )}
+            .
           </p>
         </div>
       </div>
@@ -168,9 +174,12 @@ export function ServerContent({ server }: ServerContentProps) {
         logoUrl={server.logoUrl}
       />
       <p className="text-muted-foreground text-lg">{server.shortDesc}</p>
-      
+
       <div className="mt-8">
-        <UniversalInstallGuide serverName={server.name} repoUrl={server.repoUrl} />
+        <UniversalInstallGuide
+          serverName={server.name}
+          repoUrl={server.repoUrl}
+        />
       </div>
     </div>
   );

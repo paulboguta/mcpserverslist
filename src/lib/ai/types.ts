@@ -55,9 +55,11 @@ export interface ObjectPromptTemplate extends PromptTemplateBase {
   systemPrompt?: string; // Optional system prompt for additional context
   outputStrategy: ObjectOutputStrategy;
   // biome-ignore lint/suspicious/noExplicitAny: <any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   schema: z.ZodType<any>; // Schema for the expected return object
   // biome-ignore lint/suspicious/noExplicitAny: <any>
-  jsonSchema?: any; // Direct JSON schema for Claude Sonnet 4 compatibility 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jsonSchema?: any; // Direct JSON schema for Claude Sonnet 4 compatibility
   schemaName: string;
   schemaDescription?: string; // Optional description of the schema for context
 }
@@ -132,5 +134,6 @@ export interface AITemplate {
 export interface LLMTrackingProperties {
   provider: ProviderType;
   // biome-ignore lint/suspicious/noExplicitAny: <any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }

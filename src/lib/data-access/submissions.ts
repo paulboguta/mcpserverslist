@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { submissions, servers, type NewSubmission } from "../db/schema";
 

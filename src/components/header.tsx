@@ -4,7 +4,6 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-
 import { Button } from "@/components/ui/button";
 // import { AD_PLACEMENT } from "@/config/ads";
 import { cn } from "@/lib/utils";
@@ -18,16 +17,13 @@ export function Header() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b border-dashed backdrop-blur">
       <div className="container-wrapper px-8">
         <div className="justify flex h-14 items-center">
           <div className="flex w-full items-center gap-8">
             <Link href="/" className="group flex cursor-pointer items-center">
-            <span className="font-bold">
-              MCP Servers List
-            </span>
+              <span className="font-bold">MCP Servers List</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -46,7 +42,7 @@ export function Header() {
               >
                 Categories
               </Link> */}
-{/* 
+              {/* 
                 <Link
                   prefetch={false}
                   href="/advertise"
@@ -136,8 +132,10 @@ export function Header() {
               </Link> */}
 
               <div className="flex items-center py-2">
-
-              <GitHubStarsButton username="paulboguta" repo="mcpserverslist" />
+                <GitHubStarsButton
+                  username="paulboguta"
+                  repo="mcpserverslist"
+                />
               </div>
 
               <Button

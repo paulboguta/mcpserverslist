@@ -3,7 +3,6 @@
 import { authClient } from "@/lib/auth-client";
 import { publicProcedure } from "@/lib/safe-action";
 
-
 export const getCurrentUserAction = publicProcedure
   .createServerAction()
   .handler(async () => {

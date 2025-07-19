@@ -1,9 +1,9 @@
-import { Icons } from '@/components/icons';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Separator } from '@/components/ui/separator';
-import { SVG_PLACEHOLDER, getFaviconUrl } from '@/lib/favicon';
-import { format } from 'date-fns';
-import Link from 'next/link';
+import { Icons } from "@/components/icons";
+import { OptimizedImage } from "@/components/ui/optimized-image";
+import { Separator } from "@/components/ui/separator";
+import { SVG_PLACEHOLDER, getFaviconUrl } from "@/lib/favicon";
+import { format } from "date-fns";
+import Link from "next/link";
 
 type ServerCardProps = {
   slug: string;
@@ -57,7 +57,9 @@ export function ServerCard({
               />
               <span className="text-foreground">{name}</span>
             </h3>
-            <p className="text-muted-foreground line-clamp-3 min-h-[60px] text-sm">{shortDesc}</p>
+            <p className="text-muted-foreground line-clamp-3 min-h-[60px] text-sm">
+              {shortDesc}
+            </p>
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-2">
@@ -66,31 +68,35 @@ export function ServerCard({
             <div className="flex items-center gap-1 text-sm">
               <Icons.tag className="h-4 w-4 text-muted-foreground" />
               <span className="text-muted-foreground text-[13px]">
-                {categories.slice(0, 2).join(', ')}
+                {categories.slice(0, 2).join(", ")}
                 {categories.length > 2 && ` +${categories.length - 2}`}
               </span>
             </div>
           )}
-          
+
           {/* GitHub stats and metadata */}
           <div className="text-muted-foreground flex items-center gap-4 text-sm">
             {stars !== null && stars !== undefined && (
               <div className="flex items-center gap-1">
                 <Icons.gitHub className="h-4 w-4" />
-                <span className="text-[13px]">{stars.toLocaleString()} stars</span>
+                <span className="text-[13px]">
+                  {stars.toLocaleString()} stars
+                </span>
               </div>
             )}
-            
+
             {lastCommit && (
               <>
                 {stars !== null && stars !== undefined && (
                   <Separator orientation="vertical" className="h-4" />
                 )}
-                <span className="text-[13px]">Last commit {format(lastCommit, 'MMM d, yyyy')}</span>
+                <span className="text-[13px]">
+                  Last commit {format(lastCommit, "MMM d, yyyy")}
+                </span>
               </>
             )}
-            
-            {license && license !== 'other' && license !== 'unknown' && (
+
+            {license && license !== "other" && license !== "unknown" && (
               <>
                 <Separator orientation="vertical" className="h-4" />
                 <span className="uppercase text-[13px]">{license}</span>

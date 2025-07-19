@@ -2,18 +2,20 @@ import { createServerActionProcedure } from "zsa";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export const publicProcedure = createServerActionProcedure().handler(async () => {
-  const headersList = await headers();
+export const publicProcedure = createServerActionProcedure().handler(
+  async () => {
+    const headersList = await headers();
 
-  const session = await auth.api.getSession({
-    headers: headersList,
-  });
-  
-  return session?.user || null;
-});
+    const session = await auth.api.getSession({
+      headers: headersList,
+    });
 
-export const adminProcedure = createServerActionProcedure()
-  .handler(async () => {
+    return session?.user || null;
+  },
+);
+
+export const adminProcedure = createServerActionProcedure().handler(
+  async () => {
     const headersList = await headers();
     const session = await auth.api.getSession({
       headers: headersList,
@@ -28,4 +30,5 @@ export const adminProcedure = createServerActionProcedure()
     }
 
     return { user: session.user };
-  });
+  },
+);

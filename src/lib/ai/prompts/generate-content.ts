@@ -11,17 +11,20 @@ export const generateContentJsonSchema = {
   properties: {
     summary: {
       type: "string" as const,
-      description: "A brief, one-sentence overview of the MCP server (max 160 characters for SEO)"
-    }
+      description:
+        "A brief, one-sentence overview of the MCP server (max 160 characters for SEO)",
+    },
   },
-  required: ["summary"] as const
+  required: ["summary"] as const,
 };
 
 // Keep Zod schema for type inference
 export const generateContentSchema = z.object({
   summary: z
     .string()
-    .describe("A brief, one-sentence overview of the MCP server (max 160 characters for SEO)"),
+    .describe(
+      "A brief, one-sentence overview of the MCP server (max 160 characters for SEO)",
+    ),
 });
 
 export type GenerateContentResponse = z.infer<typeof generateContentSchema>;
@@ -38,7 +41,8 @@ export const generateContentTemplate: ObjectPromptTemplate = {
   jsonSchema: generateContentJsonSchema,
   schemaName: "GenerateContentResponse",
   schemaDescription: "Generated summary for MCP server",
-  systemPrompt: "You are an expert at summarizing MCP (Model Context Protocol) servers. Create concise, engaging summaries that explain what the server does.",
+  systemPrompt:
+    "You are an expert at summarizing MCP (Model Context Protocol) servers. Create concise, engaging summaries that explain what the server does.",
   template: `Given the following inputs about an MCP server, generate a concise summary.
 
 **Server Name:** {{serverName}}
@@ -71,4 +75,3 @@ export interface GenerateContentInput {
     lastCommit: Date;
   };
 }
-

@@ -1,7 +1,7 @@
-import { Icons } from '@/components/icons';
-import { Button } from '@/components/ui/button';
-import { Server } from '@/lib/db/schema';
-import { ServerStats } from './server-stats';
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Server } from "@/lib/db/schema";
+import { ServerStats } from "./server-stats";
 
 export async function RightSidebar({ server }: { server: Server }) {
   return (

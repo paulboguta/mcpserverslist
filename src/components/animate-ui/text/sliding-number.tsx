@@ -156,8 +156,8 @@ function SlidingNumber({
   const [prevIntStrRaw = "", prevDecStrRaw = ""] = prevFormatted.split(".");
   const prevIntStr =
     padStart && prevIntStrRaw.length === 1
-      // biome-ignore lint/style/useTemplate: <explanation>
-      ? "0" + prevIntStrRaw
+      ? // biome-ignore lint/style/useTemplate: <explanation>
+        "0" + prevIntStrRaw
       : prevIntStrRaw;
 
   const adjustedPrevInt = React.useMemo(() => {

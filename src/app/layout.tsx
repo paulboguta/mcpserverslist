@@ -23,14 +23,14 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  manifest: '/site.webmanifest',
+  manifest: "/site.webmanifest",
   other: {
-    'google-site-verification': process.env.GOOGLE_SITE_VERIFICATION || '',
+    "google-site-verification": process.env.GOOGLE_SITE_VERIFICATION || "",
   },
 };
 

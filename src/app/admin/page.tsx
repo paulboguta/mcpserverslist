@@ -22,7 +22,6 @@ export default async function AdminPage() {
   // Fetch servers on the server
   const servers = await getServers();
 
-
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto p-6">

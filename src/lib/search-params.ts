@@ -3,14 +3,14 @@ import {
   createSearchParamsCache,
   parseAsInteger,
   parseAsString,
-} from 'nuqs/server';
-import { startTransition } from 'react';
+} from "nuqs/server";
+import { startTransition } from "react";
 
 export const searchParams = {
   page: parseAsInteger.withDefault(1).withOptions({
     shallow: false,
   }),
-  q: parseAsString.withDefault('').withOptions({
+  q: parseAsString.withDefault("").withOptions({
     shallow: false,
     startTransition,
   }),

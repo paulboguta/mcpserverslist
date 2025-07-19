@@ -79,40 +79,40 @@ export default async function HomePage(props: {
     <>
       <HomepageJsonLd />
       <div>
-      <section className="mx-auto mb-6 flex flex-col gap-3 px-8 py-12 lg:py-20">
-        <h1 className="text-3xl leading-[1.1] font-bold tracking-tight">
-          Explore MCP Servers
-        </h1>
-        <p className="text-muted-foreground text-lg">
-          A public directory for AI-curious engineers and CTOs to discover Model
-          Context Protocol servers
-        </p>
-        <h3 className="text-sm text-muted-foreground/70 mt-2">
-          New to MCPs? Learn more{" "}
-          <a
-            href="https://modelcontextprotocol.io/introduction"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-muted-foreground transition-colors"
-          >
-           here
-          </a>
-        </h3>
-      </section>
+        <section className="mx-auto mb-6 flex flex-col gap-3 px-8 py-12 lg:py-20">
+          <h1 className="text-3xl leading-[1.1] font-bold tracking-tight">
+            Explore MCP Servers
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            A public directory for AI-curious engineers and CTOs to discover
+            Model Context Protocol servers
+          </p>
+          <h3 className="text-sm text-muted-foreground/70 mt-2">
+            New to MCPs? Learn more{" "}
+            <a
+              href="https://modelcontextprotocol.io/introduction"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-muted-foreground transition-colors"
+            >
+              here
+            </a>
+          </h3>
+        </section>
 
-      <Suspense fallback={<ToolbarSkeleton />}>
-        <Toolbar<ServerSortField>
-          sortOptions={SERVERS_SORT_OPTIONS}
-          defaultSort={DEFAULT_SORT_SERVERS}
-          searchPlaceholder="Search servers..."
-        />
-      </Suspense>
-
-      <section className="px-8 pb-24">
-        <Suspense fallback={<SkeletonServersContent />}>
-          <ServersContent searchParams={searchParams} />
+        <Suspense fallback={<ToolbarSkeleton />}>
+          <Toolbar<ServerSortField>
+            sortOptions={SERVERS_SORT_OPTIONS}
+            defaultSort={DEFAULT_SORT_SERVERS}
+            searchPlaceholder="Search servers..."
+          />
         </Suspense>
-      </section>
+
+        <section className="px-8 pb-24">
+          <Suspense fallback={<SkeletonServersContent />}>
+            <ServersContent searchParams={searchParams} />
+          </Suspense>
+        </section>
       </div>
     </>
   );

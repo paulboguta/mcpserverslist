@@ -12,6 +12,7 @@ import { headers } from "next/headers";
 
 export const submitServer = createServerAction()
   // biome-ignore lint/suspicious/noExplicitAny: <zod - zsa conflict>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   .input(submitServerSchema as any)
   .handler(async ({ input }) => {
     try {
@@ -21,9 +22,9 @@ export const submitServer = createServerAction()
         headers: headersList,
       });
       const clientIP = getClientIP(request);
-      
+
       const rateLimitResult = await checkRateLimit(clientIP, "submissions");
-      
+
       if (!rateLimitResult.success) {
         return {
           success: false,
@@ -32,7 +33,7 @@ export const submitServer = createServerAction()
       }
       // Check if server already exists in the servers table
       const serverExists = await checkIfServerExists(input.repoUrl);
-      
+
       if (serverExists) {
         return {
           success: false,
@@ -42,11 +43,12 @@ export const submitServer = createServerAction()
 
       // Check if submission already exists
       const submissionExists = await checkIfSubmissionExists(input.repoUrl);
-      
+
       if (submissionExists) {
         return {
           success: false,
-          message: "This MCP server has already been submitted and is pending review.",
+          message:
+            "This MCP server has already been submitted and is pending review.",
         };
       }
 

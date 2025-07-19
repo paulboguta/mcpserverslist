@@ -98,11 +98,13 @@ export const runTextPrompt = async (
 
     return {
       text: response.text,
-      usage: response.usage ? {
-        inputTokens: response.usage.promptTokens || 0,
-        outputTokens: response.usage.completionTokens || 0,
-        totalTokens: response.usage.totalTokens || 0,
-      } : undefined,
+      usage: response.usage
+        ? {
+            inputTokens: response.usage.promptTokens || 0,
+            outputTokens: response.usage.completionTokens || 0,
+            totalTokens: response.usage.totalTokens || 0,
+          }
+        : undefined,
     };
   } catch (error) {
     console.error("Error generating text:", error);
@@ -117,47 +119,45 @@ export const runTextPrompt = async (
  * Generate object using an object prompt template
  */
 export const runObjectPrompt = async <T>(
-	provider: ProviderType,
-	template: ObjectPromptTemplate,
-	variables: Record<string, string>,
-	userId?: string,
+  provider: ProviderType,
+  template: ObjectPromptTemplate,
+  variables: Record<string, string>,
+  userId?: string,
 ): Promise<ObjectGenerationResponse<T>> => {
-	// Format the prompt with variables (if any)
-	const promptText = formatPrompt(template.template || "", variables || {});
-	const model = getTracedModel(
-		provider,
-		userId,
-	);
+  // Format the prompt with variables (if any)
+  const promptText = formatPrompt(template.template || "", variables || {});
+  const model = getTracedModel(provider, userId);
 
-	// Generate structured object from the model
-	try {
-		const response = await generateObject({
-			// biome-ignore lint/suspicious/noExplicitAny: <mvp>
-			model: model as any,
-			schema: template.schema,
-			schemaName: template.schemaName,
-			schemaDescription: template.schemaDescription,
-			system: template.systemPrompt,
-			prompt: promptText,
-			temperature: 0.7,
-		});
+  // Generate structured object from the model
+  try {
+    const response = await generateObject({
+      // biome-ignore lint/suspicious/noExplicitAny: <mvp>
+      model: model as any,
+      schema: template.schema,
+      schemaName: template.schemaName,
+      schemaDescription: template.schemaDescription,
+      system: template.systemPrompt,
+      prompt: promptText,
+      temperature: 0.7,
+    });
 
-		return {
-			object: response.object as T,
-			usage: response.usage ? {
-				inputTokens: response.usage.promptTokens || 0,
-				outputTokens: response.usage.completionTokens || 0,
-				totalTokens: response.usage.totalTokens || 0,
-			} : undefined,
-		};
-	} catch (error) {
-		console.error("Error generating structured object:", error);
-		throw new Error(
-			`Failed to generate structured response for ${provider}: ${error instanceof Error ? error.message : "Unknown error"}`,
-		);
-	}
+    return {
+      object: response.object as T,
+      usage: response.usage
+        ? {
+            inputTokens: response.usage.promptTokens || 0,
+            outputTokens: response.usage.completionTokens || 0,
+            totalTokens: response.usage.totalTokens || 0,
+          }
+        : undefined,
+    };
+  } catch (error) {
+    console.error("Error generating structured object:", error);
+    throw new Error(
+      `Failed to generate structured response for ${provider}: ${error instanceof Error ? error.message : "Unknown error"}`,
+    );
+  }
 };
-
 
 /**
  * Helper function to handle generation errors consistently

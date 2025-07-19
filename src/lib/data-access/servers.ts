@@ -4,7 +4,7 @@ import { sql, or, ilike, eq } from "drizzle-orm";
 import { DEFAULT_SORT_SERVERS } from "@/config/sorting";
 
 export const getServers = async ({
-  searchQuery = '',
+  searchQuery = "",
   page = 1,
   limit = 12,
   sortField = DEFAULT_SORT_SERVERS.field,
@@ -21,21 +21,27 @@ export const getServers = async ({
 
   // Build the ORDER BY clause
   const orderByClause = (() => {
-    if (sortField === 'name') {
-      return sortDirection === 'asc' ? sql`servers.name ASC` : sql`servers.name DESC`;
+    if (sortField === "name") {
+      return sortDirection === "asc"
+        ? sql`servers.name ASC`
+        : sql`servers.name DESC`;
     }
 
-    if (sortField === 'stars') {
-      return sortDirection === 'asc' ? sql`servers.stars ASC` : sql`servers.stars DESC`;
+    if (sortField === "stars") {
+      return sortDirection === "asc"
+        ? sql`servers.stars ASC`
+        : sql`servers.stars DESC`;
     }
 
-    if (sortField === 'lastCommit') {
-      return sortDirection === 'asc'
+    if (sortField === "lastCommit") {
+      return sortDirection === "asc"
         ? sql`servers.last_commit ASC`
         : sql`servers.last_commit DESC`;
     }
 
-    return sortDirection === 'asc' ? sql`servers.created_at ASC` : sql`servers.created_at DESC`;
+    return sortDirection === "asc"
+      ? sql`servers.created_at ASC`
+      : sql`servers.created_at DESC`;
   })();
 
   // Build the WHERE condition
@@ -50,7 +56,7 @@ export const getServers = async ({
     const fallbackCondition = or(
       ilike(servers.name, `%${searchQuery}%`),
       ilike(servers.shortDesc, `%${searchQuery}%`),
-      ilike(servers.longDesc, `%${searchQuery}%`)
+      ilike(servers.longDesc, `%${searchQuery}%`),
     );
 
     // Combine both conditions with OR
@@ -90,7 +96,10 @@ export const getServers = async ({
   const totalCountPromise = db.$count(servers, condition);
 
   // Execute both queries in parallel for better performance
-  const [results, totalCount] = await Promise.all([resultsPromise, totalCountPromise]);
+  const [results, totalCount] = await Promise.all([
+    resultsPromise,
+    totalCountPromise,
+  ]);
 
   return {
     servers: results,
@@ -109,7 +118,7 @@ export const getServerBySlug = async (slug: string) => {
     .from(servers)
     .where(eq(servers.slug, slug))
     .limit(1);
-    
+
   return server || null;
 };
 

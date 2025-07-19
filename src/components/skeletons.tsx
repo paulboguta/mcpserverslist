@@ -1,8 +1,6 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { Separator } from '@radix-ui/react-separator';
-
+import { Separator } from "@radix-ui/react-separator";
 
 function SkeletonServerCard() {
   return (
@@ -42,7 +40,7 @@ export function SkeletonServersContent() {
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {skeletonCards.map(index => (
+        {skeletonCards.map((index) => (
           <SkeletonServerCard key={index} />
         ))}
       </div>

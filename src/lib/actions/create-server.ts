@@ -7,11 +7,14 @@ export async function triggerServerCreation(data: CreateServerData) {
   try {
     const result = await inngest.send({
       name: "server/created",
-      data
+      data,
     });
     return { success: true, result };
   } catch (error) {
     console.error("Failed to trigger server creation:", error);
-    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }

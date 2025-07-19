@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Input } from '@/components/ui/input';
-import { useSearch } from '@/hooks/use-search';
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/hooks/use-search";
 
-import debounce from 'debounce';
-import { Search as SearchIcon } from 'lucide-react';
-import { LoadingIndicator } from '../loading-indicator';
+import debounce from "debounce";
+import { Search as SearchIcon } from "lucide-react";
+import { LoadingIndicator } from "../loading-indicator";
 
 export function Search({ searchPlaceholder }: { searchPlaceholder: string }) {
   const { isPending, setSearchTerm, setPage } = useSearch();
@@ -13,7 +13,7 @@ export function Search({ searchPlaceholder }: { searchPlaceholder: string }) {
   const debouncedSetSearchTerm = debounce((value: string) => {
     setSearchTerm(value);
     // When user searches, we want to change page query back to 1
-    setPage('1');
+    setPage("1");
   }, 350);
 
   return (
@@ -29,7 +29,7 @@ export function Search({ searchPlaceholder }: { searchPlaceholder: string }) {
         type="search"
         placeholder={searchPlaceholder}
         className="w-full pr-4 pl-8"
-        onChange={e => debouncedSetSearchTerm(e.target.value)}
+        onChange={(e) => debouncedSetSearchTerm(e.target.value)}
         aria-label="Search servers"
       />
     </div>

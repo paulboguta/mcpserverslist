@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import type { Server } from "@/lib/db/schema";
 import { useState } from "react";
 import { useServerAction } from "zsa-react";
@@ -16,9 +20,16 @@ import { uploadLogoAction } from "@/app/actions/upload";
 const serverSchema = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required"),
-  shortDesc: z.string().min(1, "Short description is required").max(160, "Short description must be 160 characters or less"),
+  shortDesc: z
+    .string()
+    .min(1, "Short description is required")
+    .max(160, "Short description must be 160 characters or less"),
   longDesc: z.string().optional(),
-  homepageUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  homepageUrl: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
   repoUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   docsUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   logoUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
@@ -35,18 +46,26 @@ interface ServerFormProps {
   isLoading?: boolean;
 }
 
-export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerFormProps) {
+export function ServerForm({
+  server,
+  onSubmit,
+  onCancel,
+  isLoading,
+}: ServerFormProps) {
   const [uploadedLogoUrl, setUploadedLogoUrl] = useState<string>("");
 
-  const { execute: uploadLogo, isPending: isUploading } = useServerAction(uploadLogoAction, {
-    onSuccess: ({ data }) => {
-      setUploadedLogoUrl(data.logoUrl);
+  const { execute: uploadLogo, isPending: isUploading } = useServerAction(
+    uploadLogoAction,
+    {
+      onSuccess: ({ data }) => {
+        setUploadedLogoUrl(data.logoUrl);
+      },
+      onError: ({ err }) => {
+        console.error("Failed to upload logo:", err);
+        alert("Failed to upload logo: " + err.message);
+      },
     },
-    onError: ({ err }) => {
-      console.error("Failed to upload logo:", err);
-      alert("Failed to upload logo: " + err.message);
-    },
-  });
+  );
   const {
     register,
     handleSubmit,
@@ -55,20 +74,22 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
     watch,
   } = useForm<ServerFormData>({
     resolver: zodResolver(serverSchema),
-    defaultValues: server ? {
-      name: server.name,
-      slug: server.slug,
-      shortDesc: server.shortDesc,
-      longDesc: server.longDesc || "",
-      homepageUrl: server.homepageUrl || "",
-      repoUrl: server.repoUrl || "",
-      docsUrl: server.docsUrl || "",
-      logoUrl: server.logoUrl || "",
-      stars: server.stars || 0,
-      license: server.license || "",
-    } : {
-      stars: 0,
-    },
+    defaultValues: server
+      ? {
+          name: server.name,
+          slug: server.slug,
+          shortDesc: server.shortDesc,
+          longDesc: server.longDesc || "",
+          homepageUrl: server.homepageUrl || "",
+          repoUrl: server.repoUrl || "",
+          docsUrl: server.docsUrl || "",
+          logoUrl: server.logoUrl || "",
+          stars: server.stars || 0,
+          license: server.license || "",
+        }
+      : {
+          stars: 0,
+        },
   });
 
   const currentLogoUrl = watch("logoUrl");
@@ -91,11 +112,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
   return (
     <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>
-          {server ? "Edit Server" : "Add New Server"}
-        </DialogTitle>
+        <DialogTitle>{server ? "Edit Server" : "Add New Server"}</DialogTitle>
       </DialogHeader>
-      
+
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -109,7 +128,7 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
             )}
           </div>
-          
+
           <div>
             <Label htmlFor="slug">Slug *</Label>
             <Input
@@ -132,17 +151,15 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
             rows={2}
           />
           {errors.shortDesc && (
-            <p className="text-sm text-red-500 mt-1">{errors.shortDesc.message}</p>
+            <p className="text-sm text-red-500 mt-1">
+              {errors.shortDesc.message}
+            </p>
           )}
         </div>
 
         <div>
           <Label htmlFor="longDesc">Long Description</Label>
-          <Textarea
-            id="longDesc"
-            {...register("longDesc")}
-            rows={4}
-          />
+          <Textarea id="longDesc" {...register("longDesc")} rows={4} />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -155,7 +172,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               className={errors.homepageUrl ? "border-red-500" : ""}
             />
             {errors.homepageUrl && (
-              <p className="text-sm text-red-500 mt-1">{errors.homepageUrl.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.homepageUrl.message}
+              </p>
             )}
           </div>
 
@@ -168,7 +187,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               className={errors.repoUrl ? "border-red-500" : ""}
             />
             {errors.repoUrl && (
-              <p className="text-sm text-red-500 mt-1">{errors.repoUrl.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.repoUrl.message}
+              </p>
             )}
           </div>
         </div>
@@ -183,7 +204,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               className={errors.docsUrl ? "border-red-500" : ""}
             />
             {errors.docsUrl && (
-              <p className="text-sm text-red-500 mt-1">{errors.docsUrl.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.docsUrl.message}
+              </p>
             )}
           </div>
 
@@ -198,7 +221,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               onChange={(e) => setValue("logoUrl", e.target.value)}
             />
             {errors.logoUrl && (
-              <p className="text-sm text-red-500 mt-1">{errors.logoUrl.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.logoUrl.message}
+              </p>
             )}
           </div>
         </div>
@@ -216,7 +241,9 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
             <p className="text-sm text-blue-500 mt-1">Uploading logo...</p>
           )}
           {uploadedLogoUrl && (
-            <p className="text-sm text-green-500 mt-1">Logo uploaded successfully!</p>
+            <p className="text-sm text-green-500 mt-1">
+              Logo uploaded successfully!
+            </p>
           )}
         </div>
 
@@ -230,16 +257,15 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
               className={errors.stars ? "border-red-500" : ""}
             />
             {errors.stars && (
-              <p className="text-sm text-red-500 mt-1">{errors.stars.message}</p>
+              <p className="text-sm text-red-500 mt-1">
+                {errors.stars.message}
+              </p>
             )}
           </div>
 
           <div>
             <Label htmlFor="license">License</Label>
-            <Input
-              id="license"
-              {...register("license")}
-            />
+            <Input id="license" {...register("license")} />
           </div>
         </div>
 
@@ -248,7 +274,11 @@ export function ServerForm({ server, onSubmit, onCancel, isLoading }: ServerForm
             Cancel
           </Button>
           <Button type="submit" disabled={isLoading || isUploading}>
-            {isLoading || isUploading ? "Saving..." : server ? "Update" : "Create"}
+            {isLoading || isUploading
+              ? "Saving..."
+              : server
+                ? "Update"
+                : "Create"}
           </Button>
         </div>
       </form>

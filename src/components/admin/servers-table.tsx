@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { Edit, Trash, ExternalLink } from "lucide-react";
+import { Trash, ExternalLink } from "lucide-react";
+import Image from "next/image";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -23,21 +24,21 @@ interface ServersTableProps {
   isLoading?: boolean;
 }
 
-export function ServersTable({ 
-  servers, 
-  onDeleteServer, 
-  isLoading 
+export function ServersTable({
+  servers,
+  onDeleteServer,
+  isLoading,
 }: ServersTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Delete server "${name}"?`)) return;
-    
+
     setDeletingId(id);
     try {
       await onDeleteServer?.(id);
       toast.success("Server deleted successfully");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete server");
     } finally {
       setDeletingId(null);
@@ -47,7 +48,9 @@ export function ServersTable({
   if (servers.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">No servers found. Create your first server!</p>
+        <p className="text-muted-foreground">
+          No servers found. Create your first server!
+        </p>
       </div>
     );
   }
@@ -70,10 +73,12 @@ export function ServersTable({
               <TableCell>
                 <div className="flex items-center gap-2">
                   {server.logoUrl && (
-                    <img
+                    <Image
                       src={server.logoUrl}
                       alt={`${server.name} logo`}
                       className="h-6 w-6 rounded-sm object-cover"
+                      width={24}
+                      height={24}
                     />
                   )}
                   <div>
@@ -111,12 +116,12 @@ export function ServersTable({
               <TableCell>
                 <div className="flex items-center gap-1">
                   {server.homepageUrl && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                    >
-                      <a href={server.homepageUrl} target="_blank" rel="noopener noreferrer">
+                    <Button variant="ghost" size="sm" asChild>
+                      <a
+                        href={server.homepageUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </Button>

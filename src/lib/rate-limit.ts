@@ -41,22 +41,23 @@ export function getClientIP(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for");
   const realIP = request.headers.get("x-real-ip");
   const cloudflareIP = request.headers.get("cf-connecting-ip");
-  
+
   if (cloudflareIP) return cloudflareIP;
   if (realIP) return realIP;
   if (forwarded) return forwarded.split(",")[0].trim();
-  
+
   return "unknown";
 }
 
 // Simple rate limit check function
 export async function checkRateLimit(
   identifier: string,
-  type: keyof typeof rateLimiters = "api"
+  type: keyof typeof rateLimiters = "api",
 ) {
   try {
-    const { success, limit, reset, remaining } = await rateLimiters[type].limit(identifier);
-    
+    const { success, limit, reset, remaining } =
+      await rateLimiters[type].limit(identifier);
+
     return {
       success,
       limit,
@@ -78,7 +79,9 @@ export async function checkRateLimit(
 }
 
 // Rate limit response headers
-export function getRateLimitHeaders(result: Awaited<ReturnType<typeof checkRateLimit>>) {
+export function getRateLimitHeaders(
+  result: Awaited<ReturnType<typeof checkRateLimit>>,
+) {
   return {
     "X-RateLimit-Limit": result.limit.toString(),
     "X-RateLimit-Remaining": result.remaining.toString(),

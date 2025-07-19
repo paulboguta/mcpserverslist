@@ -41,7 +41,6 @@ export const handleServerCreated = inngest.createFunction(
       docsUrl,
       logoUrl,
       aiContext,
-      submissionId,
     } = payload;
 
     if (!name || !homepageUrl) {
@@ -87,7 +86,7 @@ export const handleServerCreated = inngest.createFunction(
           logger.info("Fetching GitHub stats", { repoUrl: targetRepoUrl });
           const [githubStats, readmeContent] = await Promise.all([
             getGitHubStats(targetRepoUrl),
-            getRepoReadme(targetRepoUrl)
+            getRepoReadme(targetRepoUrl),
           ]);
 
           await updateServerStats({
@@ -154,6 +153,7 @@ export const handleServerCreated = inngest.createFunction(
         };
 
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const response: any = await runObjectPrompt(
           ModelProvider.ANTHROPIC,
           generateContentTemplate,
@@ -166,7 +166,7 @@ export const handleServerCreated = inngest.createFunction(
         const aiResult = response?.object;
 
         // Check if AI returned the expected structure
-        if (aiResult && typeof aiResult === 'object') {
+        if (aiResult && typeof aiResult === "object") {
           const shortDesc = aiResult.summary || "MCP server description";
 
           await updateServerContent({
@@ -216,6 +216,7 @@ export const handleServerCreated = inngest.createFunction(
           longDescription: aiContent.longDesc,
         };
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const categorizationResponse: any = await runObjectPrompt(
           ModelProvider.ANTHROPIC,
           categorizeServerTemplate,

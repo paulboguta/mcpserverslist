@@ -12,15 +12,15 @@ export const categorizeServerJsonSchema = {
     categories: {
       type: "array" as const,
       items: { type: "string" as const },
-      description: "Existing categories that match the MCP server"
+      description: "Existing categories that match the MCP server",
     },
     categoriesToAdd: {
-      type: "array" as const, 
+      type: "array" as const,
       items: { type: "string" as const },
-      description: "New categories to be created if none exist"
-    }
+      description: "New categories to be created if none exist",
+    },
   },
-  required: ["categories", "categoriesToAdd"] as const
+  required: ["categories", "categoriesToAdd"] as const,
 };
 
 // Keep Zod schema for type inference
@@ -45,8 +45,10 @@ export const categorizeServerTemplate: ObjectPromptTemplate = {
   schema: categorizeServerSchema,
   jsonSchema: categorizeServerJsonSchema,
   schemaName: "CategorizeServerResponse",
-  schemaDescription: "Categorization result with existing categories and new categories to add",
-  systemPrompt: "You are an expert at categorizing MCP (Model Context Protocol) servers. Focus on what the MCP server does functionally, not the technology stack. Remember: these are MCP servers, not general open source projects.",
+  schemaDescription:
+    "Categorization result with existing categories and new categories to add",
+  systemPrompt:
+    "You are an expert at categorizing MCP (Model Context Protocol) servers. Focus on what the MCP server does functionally, not the technology stack. Remember: these are MCP servers, not general open source projects.",
   template: `You are tasked to assign the following MCP server to the most relevant category/categories.
 
 You are given the server details and current list of categories in the database. You should assign the server to the relevant categories, but if none of them are relevant, you should add a new category.

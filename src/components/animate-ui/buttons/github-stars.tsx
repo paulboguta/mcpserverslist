@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { Star } from 'lucide-react';
+import * as React from "react";
+import { Star } from "lucide-react";
 import {
   motion,
   AnimatePresence,
@@ -11,19 +11,19 @@ import {
   type HTMLMotionProps,
   type SpringOptions,
   type UseInViewOptions,
-} from 'motion/react';
+} from "motion/react";
 
-import { cn } from '@/lib/utils';
-import { SlidingNumber } from '@/components/animate-ui/text/sliding-number';
+import { cn } from "@/lib/utils";
+import { SlidingNumber } from "@/components/animate-ui/text/sliding-number";
 
 type FormatNumberResult = { number: string[]; unit: string };
 
 function formatNumber(num: number, formatted: boolean): FormatNumberResult {
   if (formatted) {
     if (num < 1000) {
-      return { number: [num.toString()], unit: '' };
+      return { number: [num.toString()], unit: "" };
     }
-    const units = ['k', 'M', 'B', 'T'];
+    const units = ["k", "M", "B", "T"];
     let unitIndex = 0;
     let n = num;
     while (n >= 1000 && unitIndex < units.length) {
@@ -31,10 +31,10 @@ function formatNumber(num: number, formatted: boolean): FormatNumberResult {
       unitIndex++;
     }
     const finalNumber = Math.floor(n).toString();
-    return { number: [finalNumber], unit: units[unitIndex - 1] ?? '' };
-  // biome-ignore lint/style/noUselessElse: <explanation>
+    return { number: [finalNumber], unit: units[unitIndex - 1] ?? "" };
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { number: num.toLocaleString('en-US').split(','), unit: '' };
+    return { number: num.toLocaleString("en-US").split(","), unit: "" };
   }
 }
 
@@ -54,13 +54,13 @@ function GitHubStarsButtonSkeleton({ className }: { className?: string }) {
   );
 }
 
-type GitHubStarsButtonProps = HTMLMotionProps<'a'> & {
+type GitHubStarsButtonProps = HTMLMotionProps<"a"> & {
   username: string;
   repo: string;
   transition?: SpringOptions;
   formatted?: boolean;
   inView?: boolean;
-  inViewMargin?: UseInViewOptions['margin'];
+  inViewMargin?: UseInViewOptions["margin"];
   inViewOnce?: boolean;
 };
 
@@ -72,7 +72,7 @@ function GitHubStarsButton({
   formatted = false,
   inView = false,
   inViewOnce = true,
-  inViewMargin = '0px',
+  inViewMargin = "0px",
   className,
   ...props
 }: GitHubStarsButtonProps) {
@@ -95,7 +95,7 @@ function GitHubStarsButton({
     fetch(`https://api.github.com/repos/${username}/${repo}`)
       .then((response) => response.json())
       .then((data) => {
-        if (data && typeof data.stargazers_count === 'number') {
+        if (data && typeof data.stargazers_count === "number") {
           setStars(data.stargazers_count);
         }
       })
@@ -118,7 +118,7 @@ function GitHubStarsButton({
   const isComponentInView = !inView || inViewResult;
 
   React.useEffect(() => {
-    const unsubscribe = springVal.on('change', (latest: number) => {
+    const unsubscribe = springVal.on("change", (latest: number) => {
       const newValue = Math.round(latest);
       if (motionNumberRef.current !== newValue) {
         motionNumberRef.current = newValue;
@@ -148,8 +148,8 @@ function GitHubStarsButton({
   ) => (
     <span
       className={cn(
-        'flex items-center gap-px',
-        isGhost ? 'invisible' : 'absolute top-0 left-0',
+        "flex items-center gap-px",
+        isGhost ? "invisible" : "absolute top-0 left-0",
       )}
     >
       {segments.map((segment, index) => (
@@ -170,7 +170,7 @@ function GitHubStarsButton({
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       handleDisplayParticles();
-      setTimeout(() => window.open(repoUrl, '_blank'), 500);
+      setTimeout(() => window.open(repoUrl, "_blank"), 500);
     },
     [handleDisplayParticles, repoUrl],
   );
@@ -218,25 +218,25 @@ function GitHubStarsButton({
                 className="absolute inset-0 rounded-full"
                 style={{
                   background:
-                    'radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%)',
+                    "radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%)",
                 }}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: [1.2, 1.8, 1.2], opacity: [0, 0.3, 0] }}
-                transition={{ duration: 1.2, ease: 'easeInOut' }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
               />
               <motion.div
                 className="absolute inset-0 rounded-full"
-                style={{ boxShadow: '0 0 10px 2px rgba(255,215,0,0.6)' }}
+                style={{ boxShadow: "0 0 10px 2px rgba(255,215,0,0.6)" }}
                 initial={{ scale: 1, opacity: 0 }}
                 animate={{ scale: [1, 1.5], opacity: [0.8, 0] }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
               />
               {[...Array(6)].map((_, i) => (
                 <motion.div
                   // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={i}
                   className="absolute w-0.5 h-0.5 rounded-full bg-yellow-500"
-                  initial={{ x: '50%', y: '50%', scale: 0, opacity: 0 }}
+                  initial={{ x: "50%", y: "50%", scale: 0, opacity: 0 }}
                   animate={{
                     x: `calc(50% + ${Math.cos((i * Math.PI) / 3) * 20}px)`,
                     y: `calc(50% + ${Math.sin((i * Math.PI) / 3) * 20}px)`,
@@ -246,7 +246,7 @@ function GitHubStarsButton({
                   transition={{
                     duration: 0.8,
                     delay: i * 0.05,
-                    ease: 'easeOut',
+                    ease: "easeOut",
                   }}
                 />
               ))}
@@ -272,10 +272,17 @@ function GitHubStarsButton({
 
 function GitHubStarsButtonWithSuspense(props: GitHubStarsButtonProps) {
   return (
-    <React.Suspense fallback={<GitHubStarsButtonSkeleton className={props.className} />}>
+    <React.Suspense
+      fallback={<GitHubStarsButtonSkeleton className={props.className} />}
+    >
       <GitHubStarsButton {...props} />
     </React.Suspense>
   );
 }
 
-export { GitHubStarsButton, GitHubStarsButtonSkeleton, GitHubStarsButtonWithSuspense, type GitHubStarsButtonProps };
+export {
+  GitHubStarsButton,
+  GitHubStarsButtonSkeleton,
+  GitHubStarsButtonWithSuspense,
+  type GitHubStarsButtonProps,
+};

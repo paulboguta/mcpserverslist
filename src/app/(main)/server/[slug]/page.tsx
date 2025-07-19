@@ -1,11 +1,11 @@
-import { ServerContent } from '@/components/server/server-content';
-import { RightSidebar } from '@/components/server/sidebars';
-import { ServerStatsSkeleton } from '@/components/server/skeleton-server-page';
-import { websiteConfig } from '@/config/website';
-import { getServerBySlug, getAllServers } from '@/use-cases/servers';
-import { generateServerJsonLd } from '@/lib/schema';
-import { notFound } from 'next/navigation';
-import { cache, Suspense } from 'react';
+import { ServerContent } from "@/components/server/server-content";
+import { RightSidebar } from "@/components/server/sidebars";
+import { ServerStatsSkeleton } from "@/components/server/skeleton-server-page";
+import { websiteConfig } from "@/config/website";
+import { getServerBySlug, getAllServers } from "@/use-cases/servers";
+import { generateServerJsonLd } from "@/lib/schema";
+import { notFound } from "next/navigation";
+import { cache, Suspense } from "react";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -21,18 +21,20 @@ export async function generateMetadata({ params }: PageProps) {
   }
 
   const title = `${server.name} - MCP Server`;
-  const description = server.shortDesc || `Explore ${server.name} - a Model Context Protocol server on MCPServersList`;
+  const description =
+    server.shortDesc ||
+    `Explore ${server.name} - a Model Context Protocol server on MCPServersList`;
 
   return {
     title,
     description,
     openGraph: {
-      type: 'article',
-      locale: 'en_US',
+      type: "article",
+      locale: "en_US",
       url: `${websiteConfig.url}/server/${slug}`,
       title,
       description,
-      siteName: 'MCPServersList',
+      siteName: "MCPServersList",
       images: [
         {
           url: websiteConfig.ogImage,
@@ -43,7 +45,7 @@ export async function generateMetadata({ params }: PageProps) {
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
       images: [websiteConfig.ogImage],
@@ -53,18 +55,20 @@ export async function generateMetadata({ params }: PageProps) {
     },
     keywords: [
       server.name,
-      'MCP',
-      'Model Context Protocol',
-      'AI',
-      'LLM',
-      'server',
+      "MCP",
+      "Model Context Protocol",
+      "AI",
+      "LLM",
+      "server",
       `${server.name} MCP server`,
     ],
   };
 }
 
 // JSON-LD component for the server
-async function ServerJsonLd({ server }: { server: Awaited<ReturnType<typeof findServer>> }) {
+async function ServerJsonLd({
+  server,
+}: { server: Awaited<ReturnType<typeof findServer>> }) {
   const jsonLd = generateServerJsonLd(server);
 
   if (!jsonLd) return null;
@@ -81,7 +85,7 @@ async function ServerJsonLd({ server }: { server: Awaited<ReturnType<typeof find
 export async function generateStaticParams() {
   const servers = await getAllServers();
 
-  return servers.map(server => ({
+  return servers.map((server) => ({
     slug: server.slug,
   }));
 }

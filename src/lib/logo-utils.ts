@@ -1,4 +1,3 @@
-import { env } from "@/env";
 
 /**
  * Get favicon URL from Google's favicon service
@@ -9,7 +8,7 @@ export function getFaviconUrl(homepageUrl: string): string {
     const domain = url.hostname;
     // Using Google's favicon service for high quality favicons
     return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch (error) {
+  } catch {
     console.error("Invalid URL for favicon:", homepageUrl);
     return "";
   }
@@ -18,14 +17,16 @@ export function getFaviconUrl(homepageUrl: string): string {
 /**
  * Upload logo to R2 and return the public URL
  */
-export async function uploadLogoToR2(file: File, serverSlug: string): Promise<string> {
+export async function uploadLogoToR2(
+  file: File,
+  serverSlug: string,
+): Promise<string> {
   try {
     // Convert file to buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    await file.arrayBuffer();
 
     // Generate filename with timestamp to avoid caching issues
-    const ext = file.name.split('.').pop() || 'webp';
+    const ext = file.name.split(".").pop() || "webp";
     const filename = `${serverSlug}-${Date.now()}.${ext}`;
     const key = `logos/${filename}`;
 
@@ -35,7 +36,7 @@ export async function uploadLogoToR2(file: File, serverSlug: string): Promise<st
     // 1. Optimize the image (resize, convert to WebP)
     // 2. Upload to R2 with proper cache headers
     // 3. Return the CDN URL
-    
+
     console.log("Uploading logo to R2:", {
       filename,
       size: file.size,

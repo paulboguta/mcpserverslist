@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Save, Image } from "lucide-react";
+import { Plus, Save } from "lucide-react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +20,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,7 +28,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { triggerServerCreation } from "@/lib/actions/create-server";
-import { revalidateServerCache } from "@/lib/admin/cache";
 
 const createServerSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -46,7 +45,9 @@ interface CreateServerDialogProps {
   onServerCreated?: () => void;
 }
 
-export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps) {
+export function CreateServerDialog({
+  onServerCreated,
+}: CreateServerDialogProps) {
   const [open, setOpen] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const router = useRouter();
@@ -67,19 +68,19 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+      const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
       if (!validTypes.includes(file.type)) {
-        toast.error('Please upload a PNG, JPEG, or WebP image');
-        return;
-      }
-      
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Image must be less than 5MB');
+        toast.error("Please upload a PNG, JPEG, or WebP image");
         return;
       }
 
-      form.setValue('logoFile', file);
-      
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image must be less than 5MB");
+        return;
+      }
+
+      form.setValue("logoFile", file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
@@ -92,7 +93,7 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
 
   const onSubmit = async (values: CreateServerValues) => {
     setIsSubmitting(true);
-    
+
     try {
       // Convert logoUrl to favicon format if provided
       let finalLogoUrl = values.logoUrl;
@@ -101,7 +102,7 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
           const url = new URL(values.logoUrl);
           finalLogoUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
         } catch (error) {
-          console.warn('Failed to generate favicon from logoUrl:', error);
+          console.warn("Failed to generate favicon from logoUrl:", error);
           finalLogoUrl = values.logoUrl; // Keep original if URL parsing fails
         }
       }
@@ -111,14 +112,18 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
           const url = new URL(values.homepageUrl);
           finalLogoUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}&sz=128`;
         } catch (error) {
-          console.warn('Failed to generate favicon URL from homepage:', error);
+          console.warn("Failed to generate favicon URL from homepage:", error);
         }
       }
 
       // TODO: Handle file upload to R2 if logoFile is provided
       if (values.logoFile) {
         // For now, we'll use the converted favicon URL or fallback to homepage favicon
-        finalLogoUrl = finalLogoUrl || (values.homepageUrl ? `https://www.google.com/s2/favicons?domain=${new URL(values.homepageUrl).hostname}&sz=128` : undefined);
+        finalLogoUrl =
+          finalLogoUrl ||
+          (values.homepageUrl
+            ? `https://www.google.com/s2/favicons?domain=${new URL(values.homepageUrl).hostname}&sz=128`
+            : undefined);
       }
 
       // Trigger the background task that creates the server and processes it
@@ -136,7 +141,6 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
       }
 
       // Revalidate cache after triggering
-      const slug = values.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
       // await revalidateServerCache(slug);
 
       toast.success("Server creation started! Processing in background...");
@@ -146,8 +150,10 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
       onServerCreated?.();
       router.refresh();
     } catch (error) {
-      console.error('Failed to create server:', error);
-      toast.error(`Failed to create server: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error("Failed to create server:", error);
+      toast.error(
+        `Failed to create server: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -165,7 +171,7 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
         <DialogHeader>
           <DialogTitle>Add New MCP Server</DialogTitle>
         </DialogHeader>
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -233,10 +239,7 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
                 <FormItem>
                   <FormLabel>AI Context</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      className="min-h-[80px]"
-                      {...field} 
-                    />
+                    <Textarea className="min-h-[80px]" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -250,10 +253,12 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
                 </div>
                 {logoPreview && (
                   <div className="h-12 w-12 rounded-lg border p-1">
-                    <img
+                    <Image
                       src={logoPreview}
                       alt="Logo preview"
                       className="h-full w-full object-contain"
+                      width={48}
+                      height={48}
                     />
                   </div>
                 )}
@@ -263,7 +268,7 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
                 <FormField
                   control={form.control}
                   name="logoFile"
-                  render={({ field: { value, onChange, ...field } }) => (
+                  render={({ field: { ...field } }) => (
                     <FormItem>
                       <FormLabel>Upload Logo</FormLabel>
                       <FormControl>
@@ -296,7 +301,11 @@ export function CreateServerDialog({ onServerCreated }: CreateServerDialogProps)
             </div>
 
             <div className="flex justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>

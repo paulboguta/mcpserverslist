@@ -32,14 +32,22 @@ export interface UpdateServerContentInput {
  */
 export async function createServer(input: CreateServerInput) {
   let slug = generateSlug(input.name);
-  
+
   // Check if slug exists and generate unique one
-  const existingServer = await db.select({ id: servers.id }).from(servers).where(eq(servers.slug, slug)).limit(1);
+  const existingServer = await db
+    .select({ id: servers.id })
+    .from(servers)
+    .where(eq(servers.slug, slug))
+    .limit(1);
   if (existingServer.length > 0) {
     let counter = 1;
     let uniqueSlug = `${slug}-${counter}`;
     while (true) {
-      const existing = await db.select({ id: servers.id }).from(servers).where(eq(servers.slug, uniqueSlug)).limit(1);
+      const existing = await db
+        .select({ id: servers.id })
+        .from(servers)
+        .where(eq(servers.slug, uniqueSlug))
+        .limit(1);
       if (existing.length === 0) {
         slug = uniqueSlug;
         break;
@@ -48,7 +56,7 @@ export async function createServer(input: CreateServerInput) {
       uniqueSlug = `${slug}-${counter}`;
     }
   }
-  
+
   const [newServer] = await db
     .insert(servers)
     .values({
@@ -117,44 +125,46 @@ export async function createCategories(categoryNames: string[]) {
     return [];
   }
 
-  const categoryValues = categoryNames.map(name => ({
+  const categoryValues = categoryNames.map((name) => ({
     name,
     slug: generateSlug(name),
     sortOrder: 0,
   }));
 
-  return await db
-    .insert(categories)
-    .values(categoryValues)
-    .returning();
+  return await db.insert(categories).values(categoryValues).returning();
 }
 
 /**
  * Assign categories to a server
  */
-export async function assignCategoriesToServer(serverId: string, categoryNames: string[]) {
+export async function assignCategoriesToServer(
+  serverId: string,
+  categoryNames: string[],
+) {
   // First, remove existing category assignments
-  await db.delete(serversToCategories).where(eq(serversToCategories.serverId, serverId));
-  
+  await db
+    .delete(serversToCategories)
+    .where(eq(serversToCategories.serverId, serverId));
+
   if (categoryNames.length === 0) {
     return [];
   }
-  
+
   // Get category IDs
   const categoryRecords = await db
     .select({ id: categories.id, name: categories.name })
     .from(categories)
     .where(inArray(categories.name, categoryNames));
-  
+
   // Create new assignments
-  const categoryAssignments = categoryRecords.map(cat => ({
+  const categoryAssignments = categoryRecords.map((cat) => ({
     serverId,
     categoryId: cat.id,
   }));
-  
+
   await db.insert(serversToCategories).values(categoryAssignments);
-  
-  return categoryRecords.map(cat => cat.name);
+
+  return categoryRecords.map((cat) => cat.name);
 }
 
 /**
@@ -166,6 +176,6 @@ export async function getServerById(serverId: string) {
     .from(servers)
     .where(eq(servers.id, serverId))
     .limit(1);
-    
+
   return server;
 }

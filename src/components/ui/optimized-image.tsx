@@ -42,7 +42,7 @@ export function OptimizedImage({
         className={cn(
           "flex items-center justify-center bg-muted text-muted-foreground",
           isIcon ? "rounded-sm" : "rounded-md",
-          className
+          className,
         )}
         style={{ width, height }}
       >
@@ -65,7 +65,10 @@ export function OptimizedImage({
   }
 
   return (
-    <div className={cn("relative overflow-hidden", className)} style={{ width, height }}>
+    <div
+      className={cn("relative overflow-hidden", className)}
+      style={{ width, height }}
+    >
       <Image
         src={src}
         alt={alt}
@@ -73,7 +76,7 @@ export function OptimizedImage({
         height={height}
         className={cn(
           "object-cover transition-opacity duration-300",
-          loading ? "opacity-0" : "opacity-100"
+          loading ? "opacity-0" : "opacity-100",
         )}
         onError={handleError}
         onLoad={handleLoad}
